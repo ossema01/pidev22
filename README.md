@@ -1,4 +1,4 @@
-Bien-être au travail
+# Bien-être au travail
 
 La qualité de vie au travail a un impact direct sur la motivation des salariés d'une entreprise,
 et donc in fine sur leur productivité. Parmi les éléments-clés favorisant le bien-être au
@@ -16,7 +16,7 @@ productivité.
 
 Les services proposés doivent permettre les principales fonctionnalités suivantes :
 
-#Modules Fonctionnalités Gestion des utilisateurs 
+# Modules Fonctionnalités Gestion des utilisateurs 
 
 ● Inscription avec compte linkedIn
 
@@ -27,7 +27,7 @@ Les services proposés doivent permettre les principales fonctionnalités suivan
 ● Synchronisation des informations LinkedIn
 
 
-#Gestion des événements/activités
+# Gestion des événements/activités
 
 ● CRUD événements ( créer événement,rejoindre événement, noter unévénement..)
 
@@ -45,7 +45,7 @@ Les services proposés doivent permettre les principales fonctionnalités suivan
 
 ● Ajouter une activité aux favoris.
 
-#Forum 
+# Forum 
 
 ● Réseau social professionnel.
 
@@ -63,7 +63,7 @@ Les services proposés doivent permettre les principales fonctionnalités suivan
 
 ● Conseils personnalisés.
 
-#évaluation 
+# évaluation 
 
 ● Découvrir ce que pensent vos collègues sur vous.
 
@@ -77,7 +77,7 @@ Les services proposés doivent permettre les principales fonctionnalités suivan
 
 ● Voter pour une idée de badge, trophée.. 
 
-#Gestion des notifications 
+# Gestion des notifications 
 
 ● Recevoir des notifications.
 
@@ -85,7 +85,7 @@ Les services proposés doivent permettre les principales fonctionnalités suivan
 
 ● Notifier à la fin de l’événement lesparticipants pour valider les résultats.
 
-#Gestion de collaboration(Partenaires)
+# Gestion de collaboration(Partenaires)
 
 ● CRUD Collaboration
 
@@ -97,13 +97,13 @@ Les services proposés doivent permettre les principales fonctionnalités suivan
 
 ● Publicité
 
-#Fil d’actualité 
+# Fil d’actualité 
 ● Afficher des informations générales, àl’échelle de l’entreprise. Particulier à l’échelle de son département / service. 
 
 ● Gestion des publications 
 
 ● Gestion des commentaires (Like / DisLike)
 
-#TChat 
+# TChat 
 
 ● Messagerie instantanée.
