@@ -16,7 +16,7 @@ productivité.
 
 Les services proposés doivent permettre les principales fonctionnalités suivantes :
 
-Modules Fonctionnalités
+#Modules Fonctionnalités
 Gestion des utilisateurs 
 ● Inscription avec compte linkedIn
 ● Authentification
