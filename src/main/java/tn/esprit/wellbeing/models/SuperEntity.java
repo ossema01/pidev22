@@ -2,6 +2,8 @@ package tn.esprit.wellbeing.models;
 
 import java.time.LocalDateTime;
 
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 
 import org.springframework.data.annotation.CreatedBy;
@@ -12,6 +14,8 @@ import org.springframework.data.annotation.LastModifiedDate;
 @MappedSuperclass
 public abstract class SuperEntity {
 
+	@Id
+	@GeneratedValue
 	private Long id;
 
 	@CreatedBy

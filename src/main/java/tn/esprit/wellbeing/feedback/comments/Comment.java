@@ -5,7 +5,6 @@ import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 
 import tn.esprit.wellbeing.feedback.reactions.HasReactions;
@@ -17,10 +16,10 @@ public class Comment extends SuperEntity implements HasReactions {
 
 	private String body;
 
-	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Comment> replies = new ArrayList<>();
 
-	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Reaction> reactions = new ArrayList<>();
 
 	public List<Comment> getReplies() {
