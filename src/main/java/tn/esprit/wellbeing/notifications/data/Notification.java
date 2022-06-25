@@ -1,4 +1,4 @@
-package tn.esprit.wellbeing.notifications.jpa;
+package tn.esprit.wellbeing.notifications.data;
 
 import javax.persistence.Entity;
 

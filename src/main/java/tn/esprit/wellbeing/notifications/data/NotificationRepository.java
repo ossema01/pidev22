@@ -1,4 +1,4 @@
-package tn.esprit.wellbeing.notifications.jpa;
+package tn.esprit.wellbeing.notifications.data;
 
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;

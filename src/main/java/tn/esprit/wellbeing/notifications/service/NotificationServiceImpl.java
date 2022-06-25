@@ -4,8 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import tn.esprit.wellbeing.notifications.HasNotifications;
-import tn.esprit.wellbeing.notifications.jpa.Notification;
-import tn.esprit.wellbeing.notifications.jpa.NotificationRepository;
+import tn.esprit.wellbeing.notifications.data.Notification;
+import tn.esprit.wellbeing.notifications.data.NotificationRepository;
 import tn.esprit.wellbeing.notifications.provider.NotificationProvider;
 import tn.esprit.wellbeing.notifications.provider.NotificationProviderFactory;
 

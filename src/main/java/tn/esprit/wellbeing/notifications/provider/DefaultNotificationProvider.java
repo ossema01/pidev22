@@ -1,7 +1,7 @@
 package tn.esprit.wellbeing.notifications.provider;
 
 import tn.esprit.wellbeing.notifications.HasNotifications;
-import tn.esprit.wellbeing.notifications.jpa.Notification;
+import tn.esprit.wellbeing.notifications.data.Notification;
 
 public class DefaultNotificationProvider implements NotificationProvider {
 
