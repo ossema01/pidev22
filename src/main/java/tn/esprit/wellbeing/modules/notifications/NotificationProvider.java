@@ -6,7 +6,7 @@ public interface NotificationProvider {
 
 	NotificationProvider getInstance();
 
-	Class<? extends HasNotifications> getHasNotificationsSubject();
+	Class<? extends HasNotifications> getSubject();
 
 	Notification getNotification(HasNotifications entity);
 
@@ -17,5 +17,5 @@ public interface NotificationProvider {
 	Notification getNotification(HasNotifications entity, Long userId);
 
 	Notification getNotification(Long userId, String message);
-
+	
 }

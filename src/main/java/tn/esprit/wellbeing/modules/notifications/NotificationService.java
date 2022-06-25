@@ -1,5 +1,10 @@
 package tn.esprit.wellbeing.modules.notifications;
 
+import java.util.List;
+
+import tn.esprit.wellbeing.modules.notifications.data.Notification;
+import tn.esprit.wellbeing.modules.notifications.data.NotificationStatus;
+
 public interface NotificationService {
 
 	/**
@@ -13,5 +18,15 @@ public interface NotificationService {
 	 * @param params
 	 */
 	void sendNotification(Object... params);
+	
+	
+	List<Notification> findNotificationByUserId(Long userId);
+	
+	List<Notification> findNotificationByUserIdAndStatus(Long userId, NotificationStatus status);
+
+	void changeStatus(Notification notification);
+	
+	void forceChangeStatus(Notification notification, NotificationStatus toStatus);
+
 
 }

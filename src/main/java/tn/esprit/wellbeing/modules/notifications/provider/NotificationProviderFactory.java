@@ -19,7 +19,7 @@ public class NotificationProviderFactory {
 	}
 
 	public static void registerNotificationProvider(NotificationProvider notificationProviderInstance) {
-		providersByClass.put(notificationProviderInstance.getHasNotificationsSubject(), notificationProviderInstance);
+		providersByClass.put(notificationProviderInstance.getSubject(), notificationProviderInstance);
 	}
 
 	public static NotificationProvider getDefaultProvider() {
