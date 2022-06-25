@@ -4,9 +4,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import tn.esprit.wellbeing.notifications.HasNotifications;
+import tn.esprit.wellbeing.notifications.NotificationProvider;
+import tn.esprit.wellbeing.notifications.NotificationService;
 import tn.esprit.wellbeing.notifications.data.Notification;
 import tn.esprit.wellbeing.notifications.data.NotificationRepository;
-import tn.esprit.wellbeing.notifications.provider.NotificationProvider;
+import tn.esprit.wellbeing.notifications.data.NotificationStatus;
 import tn.esprit.wellbeing.notifications.provider.NotificationProviderFactory;
 
 @Service
@@ -53,6 +55,7 @@ public class NotificationServiceImpl implements NotificationService {
 			provider = NotificationProviderFactory.getDefaultProvider();
 			notif = provider.getNotification(hasNotif, userId, message);
 		}
+		notif.setStatus(NotificationStatus.Created);
 		return notif;
 	}
 

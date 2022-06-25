@@ -1,4 +1,4 @@
-package tn.esprit.wellbeing.notifications.service;
+package tn.esprit.wellbeing.notifications;
 
 public interface NotificationService {
 

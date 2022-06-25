@@ -4,6 +4,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import tn.esprit.wellbeing.notifications.HasNotifications;
+import tn.esprit.wellbeing.notifications.NotificationProvider;
 
 public class NotificationProviderFactory {
 

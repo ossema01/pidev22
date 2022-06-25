@@ -1,6 +1,5 @@
-package tn.esprit.wellbeing.notifications.provider;
+package tn.esprit.wellbeing.notifications;
 
-import tn.esprit.wellbeing.notifications.HasNotifications;
 import tn.esprit.wellbeing.notifications.data.Notification;
 
 public interface NotificationProvider {
