@@ -24,10 +24,10 @@ public class Subscription implements Serializable{
 	private Date createdAt; 
 	private Date updatedAt; 
 	private SubscriptionStatus status;
-	public Long getId() {
+	public String getId() {
 		return id;
 	}
-	public void setId(Long id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 	public String getCreatedBy() {
