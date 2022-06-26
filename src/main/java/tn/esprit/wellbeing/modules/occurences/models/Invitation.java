@@ -19,6 +19,14 @@ public class Invitation implements Serializable{
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private String id;
+	private String createdBy; 
+	private String updatedBy; 
+	 @Temporal(TemporalType.DATE)
+	@DateTimeFormat(pattern="dd/MM/yyyy")
+	private Date createdAt; 
+	private Date updatedAt; 
+	@Enumerated(EnumType.STRING)
+	private OccurenceRequestStatus status;
 	public String getCreatedBy() {
 		return createdBy;
 	}
@@ -54,12 +62,5 @@ public class Invitation implements Serializable{
 	public void setStatus(OccurenceRequestStatus status) {
 		this.status = status;
 	}
-	private String createdBy; 
-	private String updatedBy; 
-	 @Temporal(TemporalType.DATE)
-	@DateTimeFormat(pattern="dd/MM/yyyy")
-	private Date createdAt; 
-	private Date updatedAt; 
-	@Enumerated(EnumType.STRING)
-	private OccurenceRequestStatus status;
+
 }
