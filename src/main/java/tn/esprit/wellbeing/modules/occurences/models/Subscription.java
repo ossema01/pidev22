@@ -16,7 +16,7 @@ import tn.esprit.wellbeing.modules.occurences.SubscriptionStatus;
 public class Subscription implements Serializable{
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	private Long id;
+	private String id;
 	private String createdBy; 
 	private String updatedBy; 
 	 @Temporal(TemporalType.DATE)
