@@ -4,6 +4,8 @@ import java.util.Date;
 
 import javax.persistence.Entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import tn.esprit.wellbeing.models.SuperEntity;
 
 @Entity
@@ -11,6 +13,7 @@ public class Reservation extends SuperEntity {
 
 	private String description;
 
+	@JsonFormat(pattern="dd/MM/yyyy")
 	private Date reservationDate;
 
 	private double price;

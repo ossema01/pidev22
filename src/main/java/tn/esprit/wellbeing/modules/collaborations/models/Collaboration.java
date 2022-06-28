@@ -6,6 +6,8 @@ import java.util.Set;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import tn.esprit.wellbeing.models.SuperEntity;
 
 @Entity
@@ -15,8 +17,10 @@ public class Collaboration extends SuperEntity {
 
 	private String partnerName;
 
+	@JsonFormat(pattern="dd/MM/yyyy")
 	private Date startDate;
 
+	@JsonFormat(pattern="dd/MM/yyyy")
 	private Date endDate;
 
 	@OneToMany

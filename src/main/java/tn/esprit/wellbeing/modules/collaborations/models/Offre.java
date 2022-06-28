@@ -6,6 +6,8 @@ import java.util.Set;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import tn.esprit.wellbeing.models.SuperEntity;
 import tn.esprit.wellbeing.modules.feedback.ratings.HasRating;
 import tn.esprit.wellbeing.modules.feedback.ratings.Rating;
@@ -18,8 +20,10 @@ public class Offre extends SuperEntity implements HasRating{
 
 	private String title;
 
+	@JsonFormat(pattern="dd/MM/yyyy")
 	private Date startDate;
 
+	@JsonFormat(pattern="dd/MM/yyyy")
 	private Date endDate;
 
 	private int nbOfAvailablePlaces;
