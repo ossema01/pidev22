@@ -1,5 +1,7 @@
 package tn.esprit.wellbeing.modules.collaborations.models;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.Set;
 
@@ -8,58 +10,38 @@ import javax.persistence.OneToMany;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import tn.esprit.wellbeing.models.SuperEntity;
 import tn.esprit.wellbeing.modules.feedback.ratings.HasRating;
 import tn.esprit.wellbeing.modules.feedback.ratings.Rating;
 import tn.esprit.wellbeing.modules.feedback.ratings.RatingByUser;
 
 @Entity
-public class Offre extends SuperEntity implements HasRating{
+@AllArgsConstructor
+@NoArgsConstructor
+public class Offre extends SuperEntity implements HasRating {
 
 	private String description;
 
 	private String title;
 
-	@JsonFormat(pattern="dd/MM/yyyy")
+	@JsonFormat(pattern = "dd/MM/yyyy")
 	private Date startDate;
 
-	@JsonFormat(pattern="dd/MM/yyyy")
+	@JsonFormat(pattern = "dd/MM/yyyy")
 	private Date endDate;
 
 	private int nbOfAvailablePlaces;
 
 	@OneToMany
-	private Set<Reservation> rsvList;
+	private Collection<Reservation> rsvList = new ArrayList<>();
 
-	public Offre() {
-		super();
-	}
-
-	public Offre(String description, String title, Date startDate, Date endDate, int nbOfAvailablePlaces) {
-		super();
-		this.description = description;
-		this.title = title;
-		this.startDate = startDate;
-		this.endDate = endDate;
-		this.nbOfAvailablePlaces = nbOfAvailablePlaces;
-	}
-
-	public Offre(String description, String title, Date startDate, Date endDate, int nbOfAvailablePlaces,
-			Set<Reservation> rsvList) {
-		super();
-		this.description = description;
-		this.title = title;
-		this.startDate = startDate;
-		this.endDate = endDate;
-		this.nbOfAvailablePlaces = nbOfAvailablePlaces;
-		this.rsvList = rsvList;
-	}
-
-	public Set<Reservation> getRsvList() {
+	public Collection<Reservation> getRsvList() {
 		return rsvList;
 	}
 
-	public void setRsvList(Set<Reservation> rsvList) {
+	public void setRsvList(Collection<Reservation> rsvList) {
 		this.rsvList = rsvList;
 	}
 
@@ -118,7 +100,7 @@ public class Offre extends SuperEntity implements HasRating{
 	@Override
 	public void addRating(RatingByUser rating) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override

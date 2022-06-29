@@ -1,57 +1,40 @@
 package tn.esprit.wellbeing.modules.collaborations.models;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
-import java.util.Set;
-
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import tn.esprit.wellbeing.models.SuperEntity;
 
 @Entity
+@AllArgsConstructor
+@NoArgsConstructor
 public class Collaboration extends SuperEntity {
 
 	private String description;
 
 	private String partnerName;
 
-	@JsonFormat(pattern="dd/MM/yyyy")
+	@JsonFormat(pattern = "dd/MM/yyyy")
 	private Date startDate;
 
-	@JsonFormat(pattern="dd/MM/yyyy")
+	@JsonFormat(pattern = "dd/MM/yyyy")
 	private Date endDate;
 
 	@OneToMany
-	private Set<Offre> offersList;
+	private Collection<Offre> offersList = new ArrayList<>();
 
-	public Collaboration() {
-		super();
-	}
-
-	public Collaboration(String description, String partnerName, Date startDate, Date endDate) {
-		super();
-		this.description = description;
-		this.partnerName = partnerName;
-		this.startDate = startDate;
-		this.endDate = endDate;
-	}
-
-	public Collaboration(String description, String partnerName, Date startDate, Date endDate, Set<Offre> offersList) {
-		super();
-		this.description = description;
-		this.partnerName = partnerName;
-		this.startDate = startDate;
-		this.endDate = endDate;
-		this.offersList = offersList;
-	}
-
-	public Set<Offre> getOffersList() {
+	public Collection<Offre> getOffersList() {
 		return offersList;
 	}
 
-	public void setOffersList(Set<Offre> offersList) {
+	public void setOffersList(Collection<Offre> offersList) {
 		this.offersList = offersList;
 	}
 
