@@ -1,5 +1,6 @@
 package tn.esprit.wellbeing.modules.userManagement.email;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -8,11 +9,11 @@ import org.springframework.stereotype.Service;
 
 import javax.mail.internet.MimeMessage;
 
-@Service
 @Slf4j
+@Service
+@RequiredArgsConstructor
 public class EmailServiceImpl implements EmailService {
-    @Autowired
-    private JavaMailSender mailSender;
+    private final JavaMailSender mailSender;
 
     @Override
     public void sendEmail(String toEmail, String subject, String url) {
