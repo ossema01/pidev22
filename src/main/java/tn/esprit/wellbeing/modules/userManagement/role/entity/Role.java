@@ -1,4 +1,4 @@
-package tn.esprit.wellbeing.modules.role.entity;
+package tn.esprit.wellbeing.modules.userManagement.role.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
