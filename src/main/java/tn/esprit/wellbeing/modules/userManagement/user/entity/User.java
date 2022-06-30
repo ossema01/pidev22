@@ -1,9 +1,7 @@
-package tn.esprit.wellbeing.modules.user.entity;
+package tn.esprit.wellbeing.modules.userManagement.user.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import tn.esprit.wellbeing.modules.role.entity.Role;
+import lombok.*;
+import tn.esprit.wellbeing.modules.userManagement.role.entity.Role;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -13,7 +11,8 @@ import static javax.persistence.FetchType.EAGER;
 import static javax.persistence.GenerationType.IDENTITY;
 
 @Entity
-@Data
+@Setter
+@Getter
 @AllArgsConstructor
 @NoArgsConstructor
 public class User {
@@ -27,7 +26,14 @@ public class User {
 
     private String userName;
 
+    private String email;
+
+    @Column(length = 60)
     private String password;
+
+    private String role;
+
+    private boolean enabled = false;
 
     @ManyToMany(fetch = EAGER)
     private Collection<Role> roles = new ArrayList<>();
