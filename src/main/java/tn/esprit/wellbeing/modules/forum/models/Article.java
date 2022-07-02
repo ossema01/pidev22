@@ -1,7 +1,10 @@
 package tn.esprit.wellbeing.modules.forum.models;
 
+import javax.persistence.Entity;
+
 import tn.esprit.wellbeing.modules.forum.AbstractForumObject;
 
-public class Article extends AbstractForumObject<String> {
+@Entity
+public class Article extends AbstractForumObject<String>{
 
 }
