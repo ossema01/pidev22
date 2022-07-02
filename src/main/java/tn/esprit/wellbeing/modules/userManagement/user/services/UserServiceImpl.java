@@ -11,9 +11,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tn.esprit.wellbeing.modules.userManagement.role.entity.Role;
 import tn.esprit.wellbeing.modules.userManagement.role.repository.RoleRepository;
+import tn.esprit.wellbeing.modules.userManagement.user.entity.ResetPasswordToken;
 import tn.esprit.wellbeing.modules.userManagement.user.entity.User;
 import tn.esprit.wellbeing.modules.userManagement.user.entity.VerificationToken;
 import tn.esprit.wellbeing.modules.userManagement.user.model.UserModel;
+import tn.esprit.wellbeing.modules.userManagement.user.repository.ResetPasswordTokenRepository;
 import tn.esprit.wellbeing.modules.userManagement.user.repository.UserRepository;
 import tn.esprit.wellbeing.modules.userManagement.user.repository.VerificationTokenRepository;
 
@@ -23,13 +25,15 @@ import java.util.*;
 @RequiredArgsConstructor
 @Transactional
 @Slf4j
-public class UserServiceImpl implements UserService, UserDetailsService {
+public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
 
     private final RoleRepository roleRepository;
 
     private final VerificationTokenRepository verificationTokenRepository;
+
+    private final ResetPasswordTokenRepository resetPasswordTokenRepository;
 
     private final PasswordEncoder passwordEncoder;
 
@@ -69,14 +73,17 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public User registerUser(UserModel model) {
-        User user = new User();
-        user.setEmail(model.getEmail());
-        user.setFirstName(model.getFirstName());
-        user.setLastName(model.getLastName());
-        user.setRole("USER");
-        user.setPassword(passwordEncoder.encode(model.getPassword()));
-        userRepository.save(user);
-        return user;
+        if (model.getPassword().equals(model.getConfirmPassword())) {
+            User user = new User();
+            user.setEmail(model.getEmail());
+            user.setFirstName(model.getFirstName());
+            user.setLastName(model.getLastName());
+            user.setRole("USER");
+            user.setPassword(passwordEncoder.encode(model.getPassword()));
+            userRepository.save(user);
+            return user;
+        }
+        return null;
     }
 
     @Override
@@ -105,24 +112,35 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
+    public void saveResetPasswordTokenForUser(String token, User user) {
+        var resetPasswordToken = new ResetPasswordToken(user, token);
+        resetPasswordTokenRepository.save(resetPasswordToken);
+    }
+
+    @Override
+    public String validateResetPasswordToken(String token) {
+        ResetPasswordToken resetPasswordToken = resetPasswordTokenRepository.findByToken(token);
+        if (resetPasswordToken == null) {
+            return "Invalid Token";
+        }
+
+        var user = resetPasswordToken.getUser();
+        Calendar calendar = Calendar.getInstance();
+        if (resetPasswordToken.getExpirationTime().getTime() - calendar.getTime().getTime() <= 0) {
+            resetPasswordTokenRepository.delete(resetPasswordToken);
+            return "Expired Token";
+        }
+
+        user.setEnabled(true);
+        userRepository.save(user);
+        return "valid";
+    }
+
+    @Override
     public VerificationToken generateNewVerificationToken(String oldToken) {
         var verificationToken = verificationTokenRepository.findByToken(oldToken);
         verificationToken.setToken(UUID.randomUUID().toString());
         verificationTokenRepository.save(verificationToken);
         return verificationToken;
-    }
-
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findByUserName(username);
-        if (user == null) {
-            log.error("User not found.");
-            throw new UsernameNotFoundException("User not found");
-        } else {
-            log.error("User {} was found.", username);
-        }
-        Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
-        user.getRoles().forEach(role -> authorities.add(new SimpleGrantedAuthority(role.getName())));
-        return new org.springframework.security.core.userdetails.User(user.getUserName(), user.getPassword(), authorities);
     }
 }

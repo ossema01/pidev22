@@ -26,5 +26,9 @@ public interface UserService {
 
     String validateVerificationToken(String token);
 
+    void saveResetPasswordTokenForUser(String token, User user);
+
+    String validateResetPasswordToken(String token);
+
     VerificationToken generateNewVerificationToken(String oldToken);
 }

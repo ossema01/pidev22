@@ -6,14 +6,14 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
 import tn.esprit.wellbeing.modules.userManagement.email.EmailService;
 import tn.esprit.wellbeing.modules.userManagement.user.entity.User;
-import tn.esprit.wellbeing.modules.userManagement.user.event.RegistrationCompleteEvent;
+import tn.esprit.wellbeing.modules.userManagement.user.event.ResetPasswordCompleteEvent;
 import tn.esprit.wellbeing.modules.userManagement.user.services.UserService;
 
 import java.util.UUID;
 
 @Component
 @Slf4j
-public class RegistrationCompleteEventListener implements ApplicationListener<RegistrationCompleteEvent> {
+public class PasswordResetCompleteEventListener implements ApplicationListener<ResetPasswordCompleteEvent> {
 
     @Autowired
     private UserService userService;
@@ -22,15 +22,16 @@ public class RegistrationCompleteEventListener implements ApplicationListener<Re
     private EmailService emailService;
 
     @Override
-    public void onApplicationEvent(RegistrationCompleteEvent event) {
-        //create the verification token for the user with link
+    public void onApplicationEvent(ResetPasswordCompleteEvent event) {
+        //create the reset token for the user with link
         User user = event.getUser();
+
         String token = UUID.randomUUID().toString();
-        userService.saveVerificationTokenForUser(token, user);
+        userService.saveResetPasswordTokenForUser(token, user);
 
         //send mail to user
-        String url = event.getApplicationUrl() + "/verifyRegistration?token=" + token;
-        String subject = "Verification email";
+        String url = event.getApplicationUrl() + "/forgot-password?token=" + token;
+        String subject = "Reset password";
         String body = "<div style=\"background-color: #f4f4f4; margin: 0 !important; padding: 0 !important;\">\n" +
                 "    <div style=\"display: none; font-size: 1px; color: #fefefe; line-height: 1px; font-family: 'Lato', Helvetica, Arial, sans-serif; max-height: 0px; max-width: 0px; opacity: 0; overflow: hidden;\"> We're thrilled to have you here! Get ready to dive into your new account.\n" +
                 "    </div>\n" +
@@ -46,23 +47,12 @@ public class RegistrationCompleteEventListener implements ApplicationListener<Re
                 "            </td>\n" +
                 "        </tr>\n" +
                 "        <tr>\n" +
-                "            <td bgcolor=\"#FFA73B\" align=\"center\" style=\"padding: 0px 10px 0px 10px;\">\n" +
-                "                <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" style=\"max-width: 600px;\">\n" +
-                "                    <tr>\n" +
-                "                        <td bgcolor=\"#ffffff\" align=\"center\" valign=\"top\" style=\"padding: 40px 20px 20px 20px; border-radius: 4px 4px 0px 0px; color: #111111; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 48px; font-weight: 400; letter-spacing: 4px; line-height: 48px;\">\n" +
-                "                            <h1 style=\"font-size: 48px; font-weight: 400; margin: 2;\">Welcome!</h1> <img src=\" https://img.icons8.com/clouds/100/000000/handshake.png\" width=\"125\" height=\"120\" style=\"display: block; border: 0px;\" />\n" +
-                "                        </td>\n" +
-                "                    </tr>\n" +
-                "                </table>\n" +
-                "            </td>\n" +
-                "        </tr>\n" +
-                "        <tr>\n" +
                 "            <td bgcolor=\"#f4f4f4\" align=\"center\" style=\"padding: 0px 10px 0px 10px;\">\n" +
                 "                <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" style=\"max-width: 600px;\">\n" +
                 "                    <tr>\n" +
                 "                        <td bgcolor=\"#ffffff\" align=\"left\" style=\"padding: 20px 30px 40px 30px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;\">\n" +
                 "                            " + "<h2 style=\"font-size: 30px;font-weight:400;\">" + user.getFirstName() + " </h2>" +
-                "<p style=\"margin: 0;\">We're excited to have you get started. First, you need to confirm your account. Just press the button below.</p>\n" +
+                "                               <p style=\"margin: 0;\">A request has been received to change the password for your account. If you need to change your account password. Just press the button below.</p>\n" +
                 "                        </td>\n" +
                 "                    </tr>\n" +
                 "                    <tr>\n" +
@@ -72,7 +62,7 @@ public class RegistrationCompleteEventListener implements ApplicationListener<Re
                 "                                    <td bgcolor=\"#ffffff\" align=\"center\" style=\"padding: 20px 30px 60px 30px;\">\n" +
                 "                                        <table border=\"0\" cellspacing=\"0\" cellpadding=\"0\">\n" +
                 "                                            <tr>\n" +
-                "                                                <td align=\"center\" style=\"border-radius: 3px;\" bgcolor=\"#FFA73B\"><a href=\"" + url + "\" target=\"_blank\" style=\"font-size: 20px; font-family: Helvetica, Arial, sans-serif; color: #ffffff; text-decoration: none; color: #ffffff; text-decoration: none; padding: 15px 25px; border-radius: 2px; border: 1px solid #FFA73B; display: inline-block;\">Confirm Account</a></td>\n" +
+                "                                                <td align=\"center\" style=\"border-radius: 3px;\" bgcolor=\"#FFA73B\"><a href=\"" + url + "\" target=\"_blank\" style=\"font-size: 20px; font-family: Helvetica, Arial, sans-serif; color: #ffffff; text-decoration: none; color: #ffffff; text-decoration: none; padding: 15px 25px; border-radius: 2px; border: 1px solid #FFA73B; display: inline-block;\">Reset Password</a></td>\n" +
                 "                                            </tr>\n" +
                 "                                        </table>\n" +
                 "                                    </td>\n" +
@@ -117,9 +107,8 @@ public class RegistrationCompleteEventListener implements ApplicationListener<Re
                 "        </tr>\n" +
                 "    </table>\n" +
                 "</div>\n";
-
         emailService.sendEmail(user.getEmail(), subject, body);
-        //sendVerificationEmail
-        log.info("Click the link to verify your account: {}", url);
+        //sendResetPasswordEmail
+        log.info("Click the link to reset your account password: {}", url);
     }
 }
