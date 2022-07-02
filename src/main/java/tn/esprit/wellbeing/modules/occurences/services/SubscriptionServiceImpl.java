@@ -7,10 +7,11 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import org.springframework.stereotype.Service;
 import tn.esprit.wellbeing.modules.occurences.models.Subscription;
 import tn.esprit.wellbeing.modules.occurences.repositories.SubscriptionRepository;
 
-
+@Service
 public class SubscriptionServiceImpl implements ISubscriptionService {
 	@Autowired
 	SubscriptionRepository subscriptionRepository;

@@ -3,18 +3,13 @@ package tn.esprit.wellbeing.modules.occurences.models;
 import java.io.Serializable;
 import java.util.Date;
 
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+import javax.persistence.*;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
 import tn.esprit.wellbeing.modules.occurences.OccurenceRequestStatus;
 
+@Entity
 public class Invitation implements Serializable{
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)

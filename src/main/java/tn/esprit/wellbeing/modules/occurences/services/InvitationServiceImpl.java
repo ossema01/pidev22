@@ -7,9 +7,11 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import org.springframework.stereotype.Service;
 import tn.esprit.wellbeing.modules.occurences.models.Invitation;
 import tn.esprit.wellbeing.modules.occurences.repositories.InvitationRepository;
 
+@Service
 public class InvitationServiceImpl implements IInvitationService {
 	@Autowired
 	InvitationRepository invitationRepository;
