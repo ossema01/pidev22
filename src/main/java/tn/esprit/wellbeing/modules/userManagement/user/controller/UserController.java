@@ -9,6 +9,8 @@ import tn.esprit.wellbeing.modules.userManagement.email.EmailService;
 import tn.esprit.wellbeing.modules.userManagement.user.entity.User;
 import tn.esprit.wellbeing.modules.userManagement.user.entity.VerificationToken;
 import tn.esprit.wellbeing.modules.userManagement.user.event.RegistrationCompleteEvent;
+import tn.esprit.wellbeing.modules.userManagement.user.event.ResetPasswordCompleteEvent;
+import tn.esprit.wellbeing.modules.userManagement.user.model.Credentials;
 import tn.esprit.wellbeing.modules.userManagement.user.model.UserModel;
 import tn.esprit.wellbeing.modules.userManagement.user.services.UserService;
 
@@ -30,16 +32,46 @@ public class UserController {
         return ResponseEntity.ok().body(userService.getUsers());
     }
 
-    @PostMapping("/save")
-    public ResponseEntity<User> createUser(@RequestBody User user) {
-        return ResponseEntity.created(null).body(userService.saveUser(user));
+    @PostMapping("/register")
+    public ResponseEntity<String> registerUser(@RequestBody UserModel model, final HttpServletRequest request) {
+        if (userService.findByEmail(model.getEmail()) == null) {
+            var user = userService.registerUser(model);
+            if (!model.getPassword().equals(model.getConfirmPassword())) {
+                return ResponseEntity.badRequest().body("Password should be equal confirmPassword.");
+            }
+            publisher.publishEvent(new RegistrationCompleteEvent(user, getApplicationUrl(request)));
+            return ResponseEntity.created(null).body("User was created successfully.");
+        }
+        return ResponseEntity.ok().body("User already exist.");
     }
 
-    @PostMapping("/register")
-    public ResponseEntity<User> registerUser(@RequestBody UserModel model, final HttpServletRequest request) {
-        var user = userService.registerUser(model);
-        publisher.publishEvent(new RegistrationCompleteEvent(user, getApplicationUrl(request)));
-        return ResponseEntity.created(null).body(user);
+    @PostMapping("/forgot-password")
+    public ResponseEntity<String> forgotUserPassword(@RequestParam("token") String token, @RequestBody Credentials credentials) {
+        var resetPasswordToken = userService.validateResetPasswordToken(token);
+        var verificationCredentials = credentials.getPassword().equals(credentials.getConfirmPassword());
+
+        if (!resetPasswordToken.equalsIgnoreCase("valid")) {
+            return ResponseEntity.ok().body(resetPasswordToken);
+        }
+        if (!verificationCredentials) {
+            return ResponseEntity.badRequest().body("User password does not equal confirmPassword.");
+        }
+        return ResponseEntity.ok().body("User password was updated successfully.");
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<String> sendResetUserPasswordMail(@RequestBody Credentials credentials, final HttpServletRequest request) {
+        User user = userService.findByEmail(credentials.getEmail());
+        if (user == null) {
+            return ResponseEntity.ok().body("User email " + credentials.getEmail() + " not found.");
+        }
+        var userEnabled = user.isEnabled();
+
+        if (userEnabled) {
+            publisher.publishEvent(new ResetPasswordCompleteEvent(user, getApplicationUrl(request)));
+            return ResponseEntity.ok().body("Email was sent successfully.");
+        }
+        return ResponseEntity.ok().body("confirm your account at: " + credentials.getEmail());
     }
 
     @GetMapping("/verifyRegistration")
@@ -48,29 +80,30 @@ public class UserController {
         if (result.equalsIgnoreCase("valid")) {
             return ResponseEntity.ok().body("User Verified Successfully");
         }
-        return ResponseEntity.ok().body("Bad User");
+        return ResponseEntity.ok().body(result);
     }
 
     @GetMapping("/resendVerifyToken")
-    public ResponseEntity<String> resendVerificationToken(@RequestParam("token") String oldToken, @RequestParam("email") String email, HttpServletRequest request) {
-        User userdata = userService.findByEmail(email);
+    public ResponseEntity<String> resendVerificationToken(@RequestParam("token") String oldToken, @RequestBody Credentials credentials, HttpServletRequest request) {
+        User userdata = userService.findByEmail(credentials.getEmail());
         log.info("user is {}", userdata.isEnabled());
         if (!userdata.isEnabled()) {
             var verificationToken = userService.generateNewVerificationToken(oldToken);
             var user = verificationToken.getUser();
-            resendVerificationTokenMail(email, getApplicationUrl(request), verificationToken);
+            sendTokenMail(credentials.getEmail(), "verifyRegistration", "Verification email", request, verificationToken);
             return ResponseEntity.ok().body("Verification Link Sent");
         }
         return ResponseEntity.ok().body("User already verified");
     }
 
-    private void resendVerificationTokenMail(String email, String applicationUrl, VerificationToken verificationToken) {
+    private void sendTokenMail(String email, String endpoint, String emailSubject, HttpServletRequest request, VerificationToken verificationToken) {
+        var applicationUrl = getApplicationUrl(request);
         //send mail to user
-        String url = applicationUrl + "/verifyRegistration?token=" + verificationToken.getToken();
-        String subject = "Verification email";
-        String body = url;
+        var url = applicationUrl + "/" + endpoint + "?token=" + verificationToken.getToken();
+        var subject = emailSubject;
+        var body = url;
         emailService.sendEmail(email, subject, body);
-        //sendVerificationEmail
+        //sendEmail
         log.info("Click the link to verify your account: {}", url);
     }
 

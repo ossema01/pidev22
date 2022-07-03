@@ -1,9 +1,10 @@
 package tn.esprit.wellbeing.modules.forum.models;
 
-import java.util.Collection;
+import javax.persistence.Entity;
 
 import tn.esprit.wellbeing.modules.forum.AbstractForumObject;
 
-public class Survey extends AbstractForumObject<Collection<SurveyQuestion>> {
+@Entity
+public class Survey extends AbstractForumObject<SurveyContent> {
 
 }
