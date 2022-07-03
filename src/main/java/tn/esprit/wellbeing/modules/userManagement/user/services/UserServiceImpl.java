@@ -95,7 +95,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public String validateVerificationToken(String token) {
         VerificationToken verificationToken = verificationTokenRepository.findByToken(token);
-        if (verificationToken == null) {
+        if (verificationToken == null || !verificationToken.getToken().equals(token)) {
             return "Invalid Token";
         }
 
@@ -105,7 +105,7 @@ public class UserServiceImpl implements UserService {
             verificationTokenRepository.delete(verificationToken);
             return "Expired Token";
         }
-
+        verificationTokenRepository.deleteById(verificationToken.getId());
         user.setEnabled(true);
         userRepository.save(user);
         return "valid";
@@ -120,7 +120,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public String validateResetPasswordToken(String token) {
         ResetPasswordToken resetPasswordToken = resetPasswordTokenRepository.findByToken(token);
-        if (resetPasswordToken == null) {
+        if (resetPasswordToken == null || !resetPasswordToken.getToken().equals(token)) {
             return "Invalid Token";
         }
 
@@ -130,9 +130,7 @@ public class UserServiceImpl implements UserService {
             resetPasswordTokenRepository.delete(resetPasswordToken);
             return "Expired Token";
         }
-
-        user.setEnabled(true);
-        userRepository.save(user);
+        resetPasswordTokenRepository.deleteById(resetPasswordToken.getId());
         return "valid";
     }
 
