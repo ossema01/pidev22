@@ -13,6 +13,7 @@ import tn.esprit.wellbeing.modules.userManagement.user.event.ResetPasswordComple
 import tn.esprit.wellbeing.modules.userManagement.user.model.Credentials;
 import tn.esprit.wellbeing.modules.userManagement.user.model.UserModel;
 import tn.esprit.wellbeing.modules.userManagement.user.services.UserService;
+import tn.esprit.wellbeing.modules.userManagement.user.services.resetPassword.ResetPasswordService;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -24,6 +25,8 @@ public class UserController {
     private final UserService userService;
 
     private final EmailService emailService;
+
+    private final ResetPasswordService resetPasswordService;
 
     private final ApplicationEventPublisher publisher;
 
@@ -47,16 +50,22 @@ public class UserController {
 
     @PostMapping("/forgot-password")
     public ResponseEntity<String> forgotUserPassword(@RequestParam("token") String token, @RequestBody Credentials credentials) {
-        var resetPasswordToken = userService.validateResetPasswordToken(token);
+        User user = userService.findByToken(token);
         var verificationCredentials = credentials.getPassword().equals(credentials.getConfirmPassword());
+        String encodedPassword = userService.passwordEncoder(credentials.getPassword());
 
-        if (!resetPasswordToken.equalsIgnoreCase("valid")) {
-            return ResponseEntity.ok().body(resetPasswordToken);
-        }
         if (!verificationCredentials) {
             return ResponseEntity.badRequest().body("User password does not equal confirmPassword.");
         }
-        return ResponseEntity.ok().body("User password was updated successfully.");
+        if (!user.getPassword().equals(encodedPassword)) {
+            var resetPasswordToken = userService.validateResetPasswordToken(token);
+
+            if (!resetPasswordToken.equalsIgnoreCase("valid")) {
+                return ResponseEntity.ok().body(resetPasswordToken);
+            }
+            return ResponseEntity.ok().body("User password was updated successfully.");
+        }
+        return ResponseEntity.ok().body("New password should not be equal to the last used password");
     }
 
     @PostMapping("/reset-password")
@@ -65,13 +74,18 @@ public class UserController {
         if (user == null) {
             return ResponseEntity.ok().body("User email " + credentials.getEmail() + " not found.");
         }
-        var userEnabled = user.isEnabled();
+        var resetPasswordToken = resetPasswordService.findByUserId(user.getId());
 
-        if (userEnabled) {
-            publisher.publishEvent(new ResetPasswordCompleteEvent(user, getApplicationUrl(request)));
-            return ResponseEntity.ok().body("Email was sent successfully.");
+        if (resetPasswordToken.getToken() == null) {
+            var userEnabled = user.isEnabled();
+
+            if (userEnabled) {
+                publisher.publishEvent(new ResetPasswordCompleteEvent(user, getApplicationUrl(request)));
+                return ResponseEntity.ok().body("Email was sent successfully.");
+            }
+            return ResponseEntity.ok().body("confirm your account at: " + credentials.getEmail());
         }
-        return ResponseEntity.ok().body("confirm your account at: " + credentials.getEmail());
+        return ResponseEntity.ok().body("Reset password email was sent to " + credentials.getEmail());
     }
 
     @GetMapping("/verifyRegistration")

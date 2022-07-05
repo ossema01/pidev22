@@ -2,10 +2,6 @@ package tn.esprit.wellbeing.modules.userManagement.user.services;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,7 +15,9 @@ import tn.esprit.wellbeing.modules.userManagement.user.repository.ResetPasswordT
 import tn.esprit.wellbeing.modules.userManagement.user.repository.UserRepository;
 import tn.esprit.wellbeing.modules.userManagement.user.repository.VerificationTokenRepository;
 
-import java.util.*;
+import java.util.Calendar;
+import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -79,7 +77,7 @@ public class UserServiceImpl implements UserService {
             user.setFirstName(model.getFirstName());
             user.setLastName(model.getLastName());
             user.setRole("USER");
-            user.setPassword(passwordEncoder.encode(model.getPassword()));
+            user.setPassword(passwordEncoder(model.getPassword()));
             userRepository.save(user);
             return user;
         }
@@ -102,7 +100,7 @@ public class UserServiceImpl implements UserService {
         var user = verificationToken.getUser();
         Calendar calendar = Calendar.getInstance();
         if (verificationToken.getExpirationTime().getTime() - calendar.getTime().getTime() <= 0) {
-            verificationTokenRepository.delete(verificationToken);
+            verificationTokenRepository.deleteById(verificationToken.getId());
             return "Expired Token";
         }
         verificationTokenRepository.deleteById(verificationToken.getId());
@@ -127,7 +125,7 @@ public class UserServiceImpl implements UserService {
         var user = resetPasswordToken.getUser();
         Calendar calendar = Calendar.getInstance();
         if (resetPasswordToken.getExpirationTime().getTime() - calendar.getTime().getTime() <= 0) {
-            resetPasswordTokenRepository.delete(resetPasswordToken);
+            resetPasswordTokenRepository.deleteById(resetPasswordToken.getId());
             return "Expired Token";
         }
         resetPasswordTokenRepository.deleteById(resetPasswordToken.getId());
@@ -140,5 +138,15 @@ public class UserServiceImpl implements UserService {
         verificationToken.setToken(UUID.randomUUID().toString());
         verificationTokenRepository.save(verificationToken);
         return verificationToken;
+    }
+
+    @Override
+    public User findByToken(String token) {
+        return resetPasswordTokenRepository.findByToken(token).getUser();
+    }
+
+    @Override
+    public String passwordEncoder(String password) {
+        return passwordEncoder.encode(password);
     }
 }

@@ -51,7 +51,7 @@ public class PasswordResetCompleteEventListener implements ApplicationListener<R
                 "                <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" style=\"max-width: 600px;\">\n" +
                 "                    <tr>\n" +
                 "                        <td bgcolor=\"#ffffff\" align=\"left\" style=\"padding: 20px 30px 40px 30px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;\">\n" +
-                "                            " + "<h2 style=\"font-size: 30px;font-weight:400;\">" + user.getFirstName() + " </h2>" +
+                "                            " + "<h2 style=\"font-size: 30px;font-weight:400;\">Hi, " + user.getFirstName() + " </h2>" +
                 "                               <p style=\"margin: 0;\">A request has been received to change the password for your account. If you need to change your account password. Just press the button below.</p>\n" +
                 "                        </td>\n" +
                 "                    </tr>\n" +

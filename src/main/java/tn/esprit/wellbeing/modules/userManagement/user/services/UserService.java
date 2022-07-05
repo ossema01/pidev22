@@ -31,4 +31,8 @@ public interface UserService {
     String validateResetPasswordToken(String token);
 
     VerificationToken generateNewVerificationToken(String oldToken);
+
+    User findByToken(String token);
+
+    String passwordEncoder(String password);
 }
