@@ -15,7 +15,7 @@ import tn.esprit.wellbeing.modules.occurences.models.AbstractOccurence;
 import tn.esprit.wellbeing.modules.occurences.services.IAbstractOccurenceService;
 
 //AbstractOccurenceRestController
-	@RestController // = @Controller + @ResponseBody 
+@RestController // = @Controller + @ResponseBody 
 public class AbstractOccurenceRestController {
 		@Autowired
 		IAbstractOccurenceService abstractOccurenceService;
