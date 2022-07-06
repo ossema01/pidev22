@@ -55,7 +55,7 @@ public class SubscriptionServiceImpl implements ISubscriptionService {
 	}
 
 	@Override
-	public void deleteSubscription(String id) {
+	public void deleteSubscription(Long id) {
 		try {
 			l.info("In Method deleteSubscription :");
 			subscriptionRepository.deleteById(id);
@@ -84,7 +84,7 @@ public class SubscriptionServiceImpl implements ISubscriptionService {
 	}
 
 	@Override
-	public Subscription retrieveSubscription(String id) {
+	public Subscription retrieveSubscription(Long id) {
 		Optional<Subscription> subscription = null;
 		try {
 			l.info("In Method retrieveOccurenceRequest :");

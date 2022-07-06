@@ -5,6 +5,6 @@ import org.springframework.stereotype.Repository;
 import tn.esprit.wellbeing.modules.occurences.models.OccurenceRequest;
 
 @Repository
-public interface OccurenceRequestRepository extends CrudRepository<OccurenceRequest, String> {
+public interface OccurenceRequestRepository extends CrudRepository<OccurenceRequest, Long> {
 
 }

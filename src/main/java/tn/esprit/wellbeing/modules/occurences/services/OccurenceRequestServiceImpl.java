@@ -55,7 +55,7 @@ public class OccurenceRequestServiceImpl implements IOccurenceRequestService {
 	}
 
 	@Override
-	public void deleteOccurenceRequest(String id) {
+	public void deleteOccurenceRequest(Long id) {
 		try {
 			l.info("In Method deleteOccurenceRequest :");
 			occurenceRequestRepository.deleteById(id);
@@ -84,7 +84,7 @@ public class OccurenceRequestServiceImpl implements IOccurenceRequestService {
 	}
 
 	@Override
-	public OccurenceRequest retrieveOccurenceRequest(String id) {
+	public OccurenceRequest retrieveOccurenceRequest(Long id) {
 		Optional<OccurenceRequest> occurenceRequest = null;
 		try {
 			l.info("In Method retrieveOccurenceRequest :");

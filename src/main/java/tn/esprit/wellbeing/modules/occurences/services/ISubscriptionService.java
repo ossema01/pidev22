@@ -8,7 +8,7 @@ import tn.esprit.wellbeing.modules.occurences.models.Subscription;
 public interface ISubscriptionService {
 	List<Subscription> retrieveAllSubscriptions(); 
 	Subscription createSubscription(Subscription invitation);
-	void deleteSubscription(String id);
+	void deleteSubscription(Long id);
 	Subscription updateSubscription(Subscription en);
-	Subscription retrieveSubscription(String id);
+	Subscription retrieveSubscription(Long id);
 }
