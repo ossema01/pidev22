@@ -1,5 +1,6 @@
 package tn.esprit.wellbeing.modules.occurences.services;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -40,6 +41,9 @@ public class AbstractOccurenceServiceImpl implements IAbstractOccurenceService {
 	@Override
 	public AbstractOccurence createAbstractOccurence(AbstractOccurence abstractOccurence) {
 		AbstractOccurence abstractOccurence_saved = null;
+
+		abstractOccurence.setCreatedAt(LocalDateTime.now());
+		abstractOccurence.setUpdatedAt(LocalDateTime.now());
 
 		try {
 			l.info("In Method addOccurenceRequest :");

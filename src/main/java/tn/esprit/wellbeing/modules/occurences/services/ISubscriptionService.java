@@ -11,4 +11,5 @@ public interface ISubscriptionService {
 	void deleteSubscription(Long id);
 	Subscription updateSubscription(Subscription en);
 	Subscription retrieveSubscription(Long id);
+	void addSubscriptionToEvent (Long subscriptionId, Long eventId);
 }

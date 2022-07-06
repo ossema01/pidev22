@@ -27,7 +27,7 @@ public class AbstractOccurenceRestController {
 			return list;
 		}
 
-		// http://localhost:8090/pidev/retrieve-abstractOccurence/{subscription-id}
+		// http://localhost:8090/pidev/retrieve-abstractOccurence/{abstractOccurence-id}
 		@GetMapping("/retrieve-abstractOccurence/{abstractOccurence-id}")
 		public AbstractOccurence retrieveAbstractOccurence(@PathVariable("abstractOccurence-id") Long abstractOccId) {
 			return abstractOccurenceService.retrieveAbstractOccurence(abstractOccId);
