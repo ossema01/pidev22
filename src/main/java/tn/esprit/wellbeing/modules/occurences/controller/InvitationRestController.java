@@ -33,7 +33,7 @@ public class InvitationRestController {
 	 
 		// http://localhost:????/timesheet-devops/retrieve-invitation/{invitation-id}
 		@GetMapping("/retrieve-invitation/{employee-id}")
-		public Invitation retrieveInvitation(@PathVariable("employee-id") String invitationId) {
+		public Invitation retrieveInvitation(@PathVariable("employee-id") Long invitationId) {
 			return invitationService.retrieveInvitation(invitationId);
 		}
 
@@ -48,7 +48,7 @@ public class InvitationRestController {
 		// Supprimer invitation : 
 		// http://localhost:????/timesheet-devops/remove-invitation/{invitation-id}
 		@DeleteMapping("/remove-invitation/{invitation-id}") 
-		public void removeInvitation(@PathVariable("invitation-id") String invitationId) { 
+		public void removeInvitation(@PathVariable("invitation-id") Long invitationId) { 
 			invitationService.deleteInvitation(invitationId);
 		} 
 		// Modifier invitation 

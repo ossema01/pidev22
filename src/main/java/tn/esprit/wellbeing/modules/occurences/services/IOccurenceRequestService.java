@@ -7,7 +7,7 @@ import tn.esprit.wellbeing.modules.occurences.models.OccurenceRequest;
 public interface IOccurenceRequestService {
 	List<OccurenceRequest> retrieveAllOccurenceRequests(); 
 	OccurenceRequest createOccurenceRequest(OccurenceRequest occurenceRequest);
-	void deleteOccurenceRequest(String id);
+	void deleteOccurenceRequest(Long id);
 	OccurenceRequest updateOccurenceRequest(OccurenceRequest en);
-	OccurenceRequest retrieveOccurenceRequest(String id);
+	OccurenceRequest retrieveOccurenceRequest(Long id);
 }
