@@ -69,5 +69,15 @@ public abstract class SuperEntity {
 	public void setUpdatedAt(LocalDateTime updatedAt) {
 		this.updatedAt = updatedAt;
 	}
+	public SuperEntity() {
+		super();
+	}
+	public SuperEntity(Long id) {
+		super();
+		this.id = id;
+	}
+
+	
+	
 	
 }

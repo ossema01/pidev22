@@ -14,8 +14,14 @@ import tn.esprit.wellbeing.modules.occurences.SubscriptionStatus;
 public class Subscription extends SuperEntity implements Serializable{
 
 	private SubscriptionStatus status;
+    private String userId;
 
-
+	public String getUserId() {
+		return userId;
+	}
+	public void setUserId(String userId) {
+		this.userId = userId;
+	}
 	public SubscriptionStatus getStatus() {
 		return status;
 	}

@@ -51,5 +51,9 @@ public class ActivityRestController {
 	public Activity updateActivity(@RequestBody Activity activ) {
 		return activityService.updateActivity(activ);
 	}
-
+	// http://localhost:8090/pidev/add-participant-to-activity/{participant-id}/{activity-id}
+	@PostMapping("/add-participant-to-activity/{participant-id}/{activity-id}")
+	public void addParticipantToActivity(@PathVariable("participant-id") Long participantId,@PathVariable("activity-id") Long activityId) {
+		activityService.addParticipantToActivity(participantId,activityId);
+	}
 }
