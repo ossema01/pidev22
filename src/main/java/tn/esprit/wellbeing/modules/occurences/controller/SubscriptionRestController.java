@@ -45,10 +45,17 @@ public class SubscriptionRestController {
 		subscriptionService.deleteSubscription(subscriptionId);
 	}
 
-	// http://localhost:8090/pidev/modify-subscription
+	// http://localhost:8090/pidev/modif-subscription
 	@PutMapping("/modify-subscription")
 	public Subscription updateSubscription(@RequestBody Subscription subs) {
 		return subscriptionService.updateSubscription(subs);
 	}
+	
+	
+	// http://localhost:8090/pidev/add-subscription-to-event/{subscription-id}/{event-id}
+		@PostMapping("/add-subscription-to-event/{subscription-id}/{event-id}")
+		public void addSubscriptionToEvent(@PathVariable("subscription-id") Long subscriptionId,@PathVariable("event-id") Long eventId) {
+			 subscriptionService.addSubscriptionToEvent(subscriptionId,eventId);
+		}
 
 }

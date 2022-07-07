@@ -9,12 +9,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import tn.esprit.wellbeing.modules.occurences.models.Activity;
+import tn.esprit.wellbeing.modules.occurences.models.Event;
 import tn.esprit.wellbeing.modules.occurences.repositories.ActivityRepository;
+import tn.esprit.wellbeing.modules.userManagement.user.entity.User;
+import tn.esprit.wellbeing.modules.userManagement.user.repository.UserRepository;
 @Service
 public class ActivityServiceImpl implements IActivityService {
 	@Autowired
 	ActivityRepository activityRepository;
-
+	@Autowired
+	UserRepository userRepository;
 	private static final Logger l = LogManager.getLogger(ActivityServiceImpl.class);
 
 	@Override
@@ -98,6 +102,15 @@ public class ActivityServiceImpl implements IActivityService {
 		}
 		return null;
 
+	}
+	
+	@Override
+	public void addParticipantToActivity(Long userId, Long activityId) {
+		User user = userRepository.findById(userId).orElse(null);
+		Activity activity = activityRepository.findById(activityId).orElse(null);
+		activity.getParticipants().add(user);
+		activityRepository.save(activity);
+		
 	}
 
 }

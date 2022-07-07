@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import tn.esprit.wellbeing.modules.occurences.models.Event;
 import tn.esprit.wellbeing.modules.occurences.services.IEventService;
+import tn.esprit.wellbeing.modules.userManagement.user.entity.User;
 
 @RestController
 public class EventRestController {
@@ -51,4 +52,33 @@ public class EventRestController {
 	public Event updateEvent(@RequestBody Event event) {
 		return eventService.updateEvent(event);
 	}	
+	
+	// http://localhost:8090/pidev/add-activity-to-event/{activity-id}/{event-id}
+	@PostMapping("/add-activity-to-event/{activity-id}/{event-id}")
+	public void addActivityToEvent(@PathVariable("activity-id") Long activityId,@PathVariable("event-id") Long eventId) {
+		eventService.addActivityToEvent(activityId,eventId);
+	}
+	
+	
+	// http://localhost:8090/pidev/add-participant-to-event/{participant-id}/{event-id}
+	@PostMapping("/add-participant-to-event/{participant-id}/{event-id}")
+	public void addParticipantToEvent(@PathVariable("participant-id") Long participantId,@PathVariable("event-id") Long eventId) {
+		eventService.addParticipantToEvent(participantId,eventId);
+	}
+	// http://localhost:8090/pidev/find-users-with-same-interests/{interest}
+	@GetMapping("/find-users-with-same-interests/{interest}")
+	public List<User> findUsersWithSameInterests(@PathVariable("interest") String interest) {
+		return eventService.findUsersWithSameInterests(interest);
+	}
+	
+	// http://localhost:8090/pidev/accept-occurence-Request/{event-id}/{occReq-id}
+	@PostMapping("/accept-occurence-Request/{event-id}/{occReq-id}")
+	public void acceptOccurenceRequest(@PathVariable("event-id") Long eventId , @PathVariable("occReq-id") Long occReqId) {
+		 eventService.acceptOccurenceRequest(eventId,occReqId);
+	}
+	// http://localhost:8090/pidev/reject-occurence-Request/{event-id}/{occReq-id}
+		@PostMapping("/reject-occurence-Request/{event-id}/{occReq-id}")
+		public void rejectOccurenceRequest(@PathVariable("event-id") Long eventId , @PathVariable("occReq-id") Long occReqId) {
+			 eventService.rejectOccurenceRequest(eventId,occReqId);
+		}
 }

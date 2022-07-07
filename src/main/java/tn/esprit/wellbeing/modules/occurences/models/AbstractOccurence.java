@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.*;
 
@@ -12,11 +13,16 @@ import org.springframework.format.annotation.DateTimeFormat;
 import tn.esprit.wellbeing.models.SuperEntity;
 import tn.esprit.wellbeing.modules.collaborations.models.Offre;
 import tn.esprit.wellbeing.modules.feedback.comments.Comment;
+import tn.esprit.wellbeing.modules.feedback.ratings.HasRating;
+import tn.esprit.wellbeing.modules.feedback.ratings.Rating;
+import tn.esprit.wellbeing.modules.feedback.ratings.RatingByUser;
 import tn.esprit.wellbeing.modules.occurences.OccurenceStatus;
 import tn.esprit.wellbeing.modules.occurences.Repetition;
-@Entity
-public class AbstractOccurence extends SuperEntity {
+import tn.esprit.wellbeing.modules.userManagement.user.entity.User;
 
+@MappedSuperclass
+public class AbstractOccurence extends SuperEntity implements HasRating {
+    
 	private String title; 
 	private String description; 
 	 @Temporal(TemporalType.DATE)
@@ -33,7 +39,18 @@ public class AbstractOccurence extends SuperEntity {
 	private Collection<Invitation> invitationList = new ArrayList<>();
 	@OneToMany
 	private Collection<FavoriteByUser> FavoriteByUserList = new ArrayList<>();
+	@OneToMany
+	private Collection<User> participants = new ArrayList<>();
+	
+	//private Long userId;
 
+
+	public Collection<User> getParticipants() {
+		return participants;
+	}
+	public void setParticipants(Collection<User> participants) {
+		this.participants = participants;
+	}
 	public String getTitle() {
 		return title;
 	}
@@ -89,6 +106,33 @@ public class AbstractOccurence extends SuperEntity {
 	}
 	public void setFavoriteByUserList(Collection<FavoriteByUser> favoriteByUserList) {
 		FavoriteByUserList = favoriteByUserList;
+	}
+	@Override
+	public Rating getTotalRating() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	@Override
+	public Set<RatingByUser> getRatings() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	@Override
+	public void addRating(RatingByUser rating) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public boolean removeRating(RatingByUser rating) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+	public AbstractOccurence() {
+	}
+	public AbstractOccurence(Long id, String title, String description) {
+		super(id);
+		this.title = title;
+		this.description = description;
 	}
 
 

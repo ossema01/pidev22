@@ -9,13 +9,25 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import tn.esprit.wellbeing.modules.occurences.OccurenceRequestStatus;
+import tn.esprit.wellbeing.modules.occurences.models.Activity;
 import tn.esprit.wellbeing.modules.occurences.models.Event;
+import tn.esprit.wellbeing.modules.occurences.models.OccurenceRequest;
+import tn.esprit.wellbeing.modules.occurences.repositories.ActivityRepository;
 import tn.esprit.wellbeing.modules.occurences.repositories.EventRepository;
+import tn.esprit.wellbeing.modules.occurences.repositories.OccurenceRequestRepository;
+import tn.esprit.wellbeing.modules.userManagement.user.entity.User;
+import tn.esprit.wellbeing.modules.userManagement.user.repository.UserRepository;
 @Service
 public class EventServiceImpl implements IEventService {
 	@Autowired
 	EventRepository eventRepository;
-
+	@Autowired
+	UserRepository userRepository;
+	@Autowired
+	ActivityRepository activityRepository;
+	@Autowired
+	OccurenceRequestRepository occurenceRequestRepository;
 	private static final Logger l = LogManager.getLogger(EventServiceImpl.class);
 
 	@Override
@@ -102,6 +114,57 @@ public class EventServiceImpl implements IEventService {
 		}
 		return null;
 
+	}
+	
+	@Override
+	public void addParticipantToEvent(Long userId, Long eventId) {
+		User user = userRepository.findById(userId).orElse(null);
+		Event event = eventRepository.findById(eventId).orElse(null);
+		event.getParticipants().add(user);
+		eventRepository.save(event);
+		
+	}
+
+	@Override
+	public void addActivityToEvent(Long activityId, Long eventId) {
+		Activity activity = activityRepository.findById(activityId).orElse(null);
+		Event event = eventRepository.findById(eventId).orElse(null);
+		event.getActivitiesList().add(activity);
+		eventRepository.save(event);
+		
+	}
+
+	@Override
+	public List<User> findUsersWithSameInterests(String interest) {
+		Iterable<User> usersList;
+		List <User> usersWithSameInterest = null;
+		/*usersList = userRepository.findAll();
+		for (User user : usersList) {
+			if(user.getInterests().contains(interest)) {
+				usersWithSameInterest.add(user);
+			}
+		}*/
+		return usersWithSameInterest;
+	}
+
+	@Override
+	public void acceptOccurenceRequest(Long eventId, Long OccRequestId) {
+		OccurenceRequest occReq = occurenceRequestRepository.findById(OccRequestId).orElse(null);
+		Event event = eventRepository.findById(eventId).orElse(null);
+        occReq.setStatus(OccurenceRequestStatus.Accepted);
+        event.getRequests().add(occReq);
+        eventRepository.save(event);
+        occurenceRequestRepository.save(occReq);
+	}
+	
+	@Override
+	public void rejectOccurenceRequest(Long eventId, Long OccRequestId) {
+		OccurenceRequest occReq = occurenceRequestRepository.findById(OccRequestId).orElse(null);
+		Event event = eventRepository.findById(eventId).orElse(null);
+        occReq.setStatus(OccurenceRequestStatus.Rejected);
+        event.getRequests().add(occReq);
+        eventRepository.save(event);
+        occurenceRequestRepository.save(occReq);
 	}
 
 }

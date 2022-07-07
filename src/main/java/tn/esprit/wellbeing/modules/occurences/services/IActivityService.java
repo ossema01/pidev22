@@ -10,4 +10,6 @@ public interface IActivityService {
 	void deleteActivity(Long id);
 	Activity updateActivity(Activity en);
 	Activity retrieveActivity(Long id);
+	void addParticipantToActivity(Long userId, Long activityId);
+	
 }
