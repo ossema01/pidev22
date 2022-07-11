@@ -16,6 +16,8 @@ public interface UserService {
 
     User getUser(String userName);
 
+    User updateUserProfile(User user);
+
     List<User> getUsers();
 
     User findByEmail(String email);
@@ -35,4 +37,6 @@ public interface UserService {
     User findByToken(String token);
 
     String passwordEncoder(String password);
+
+    Boolean matchesPassword(String password, String encodedPassword);
 }
