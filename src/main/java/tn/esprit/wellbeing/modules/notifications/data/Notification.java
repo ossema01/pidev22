@@ -12,9 +12,19 @@ public class Notification extends SuperEntity {
 	private Long userId;
 
 	private NotificationStatus status;
+	
+	private NotificationType type = NotificationType.DEFAULT;
 
 	public String getMessage() {
 		return message;
+	}
+
+	public NotificationType getType() {
+		return type;
+	}
+
+	public void setType(NotificationType type) {
+		this.type = type;
 	}
 
 	public void setMessage(String message) {

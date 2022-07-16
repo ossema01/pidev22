@@ -10,15 +10,14 @@ public interface NotificationService {
 	/**
 	 * 
 	 * This methods checks for every param type to determine
-	 * the message to be sent, the reciever and the HasNotification
-	 * object
+	 * the message to be sent, the reciever , the HasNotification
+	 * object and the notification type ( DEFAULT, MAIL, SYSTEM_MESSAGE ) 
 	 * 
 	 * If a param is missing, a notificationFactory should be implemented
 	 * 
 	 * @param params
 	 */
 	void sendNotification(Object... params);
-	
 	
 	List<Notification> findNotificationByUserId(Long userId);
 	

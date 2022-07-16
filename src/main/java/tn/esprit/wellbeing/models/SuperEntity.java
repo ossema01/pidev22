@@ -19,7 +19,7 @@ public abstract class SuperEntity {
 	private Long id;
 
 	@CreatedBy
-	private String createdBy;
+	private Long createdBy;
 
 	@LastModifiedBy
 	private String updatedBy;
@@ -38,11 +38,11 @@ public abstract class SuperEntity {
 		this.id = id;
 	}
 
-	public String getCreatedBy() {
+	public Long getCreatedBy() {
 		return createdBy;
 	}
 
-	public void setCreatedBy(String createdBy) {
+	public void setCreatedBy(Long createdBy) {
 		this.createdBy = createdBy;
 	}
 

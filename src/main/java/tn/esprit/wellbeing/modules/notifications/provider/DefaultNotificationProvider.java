@@ -4,6 +4,7 @@ import tn.esprit.wellbeing.modules.notifications.HasNotifications;
 import tn.esprit.wellbeing.modules.notifications.NotificationException;
 import tn.esprit.wellbeing.modules.notifications.NotificationProvider;
 import tn.esprit.wellbeing.modules.notifications.data.Notification;
+import tn.esprit.wellbeing.modules.notifications.data.NotificationType;
 
 public class DefaultNotificationProvider implements NotificationProvider {
 
@@ -61,6 +62,30 @@ public class DefaultNotificationProvider implements NotificationProvider {
 	public Notification getNotification(HasNotifications entity, String message) {
 		throw new NotificationException(
 				"Please use getNotification(HasNotifications entity, Long userId, String message)");
+	}
+
+	@Override
+	public Notification getNotification(HasNotifications entity, Long userId, String message, NotificationType type) {
+		Notification notif = new Notification();
+		notif.setUserId(userId);
+		notif.setMessage(message);
+		notif.setType(type);
+		return notif;
+	}
+
+	@Override
+	public Notification getNotification(HasNotifications entity, String message, NotificationType type) {
+		throw new NotificationException(
+				"Please use getNotification(HasNotifications entity, Long userId, String message, NotificationType type)");
+	}
+
+	@Override
+	public Notification getNotification(Long userId, String message, NotificationType type) {
+		Notification notif = new Notification();
+		notif.setUserId(userId);
+		notif.setMessage(message);
+		notif.setType(type);
+		return notif;
 	}
 
 }
