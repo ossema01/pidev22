@@ -11,7 +11,6 @@ import javax.persistence.ManyToMany;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import tn.esprit.wellbeing.models.SuperEntity;
-import tn.esprit.wellbeing.modules.user.entity.User;
 
 @Entity
 @AllArgsConstructor

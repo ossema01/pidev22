@@ -19,6 +19,8 @@ public interface UserService extends UserDetailsService {
 
     User getUser(String userName);
 
+    User updateUserProfile(User user);
+
     List<User> getUsers();
 
     User findByEmail(String email);
@@ -28,6 +30,10 @@ public interface UserService extends UserDetailsService {
     void saveVerificationTokenForUser(String token, User user);
 
     String validateVerificationToken(String token);
+
+    void saveResetPasswordTokenForUser(String token, User user);
+
+    String validateResetPasswordToken(String token);
 
     VerificationToken generateNewVerificationToken(String oldToken);
 
