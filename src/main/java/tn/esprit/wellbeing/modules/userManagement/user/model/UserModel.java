@@ -24,6 +24,8 @@ public class UserModel {
 
     private String password;
 
+    private String oldPassword;
+
     private String confirmPassword;
 
     private List<String> roles;
