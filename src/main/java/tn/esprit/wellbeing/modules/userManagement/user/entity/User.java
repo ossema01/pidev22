@@ -27,6 +27,8 @@ public class User {
     private String userName;
 
     private String email;
+    
+    private int pointsNumber;
 
     @Column(length = 60)
     private String password;
