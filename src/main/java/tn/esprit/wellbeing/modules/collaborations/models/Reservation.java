@@ -8,11 +8,12 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import tn.esprit.wellbeing.models.SuperEntity;
+import tn.esprit.wellbeing.modules.notifications.HasNotifications;
 
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-public class Reservation extends SuperEntity {
+public class Reservation extends SuperEntity implements HasNotifications {
 
 	private String description;
 
