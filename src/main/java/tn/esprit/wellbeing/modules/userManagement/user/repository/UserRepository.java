@@ -6,7 +6,7 @@ import tn.esprit.wellbeing.modules.userManagement.user.entity.User;
 
 @Repository
 public interface UserRepository extends CrudRepository<User, Long> {
-    User findByUserName(String userName);
+    User findByUsername(String userName);
 
     User findByEmail(String email);
 }

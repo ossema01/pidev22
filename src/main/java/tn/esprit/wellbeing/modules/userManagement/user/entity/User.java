@@ -1,13 +1,16 @@
 package tn.esprit.wellbeing.modules.userManagement.user.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 import tn.esprit.wellbeing.modules.userManagement.role.entity.Role;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
 
-import static javax.persistence.FetchType.EAGER;
 import static javax.persistence.GenerationType.IDENTITY;
 
 @Entity
@@ -15,7 +18,9 @@ import static javax.persistence.GenerationType.IDENTITY;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class User {
+@Builder
+@ToString(exclude = {"authorities"})
+public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
@@ -24,17 +29,38 @@ public class User {
 
     private String lastName;
 
-    private String userName;
+    private String username;
 
     private String email;
+
+    private int monthlyActive;
 
     @Column(length = 60)
     private String password;
 
-    private String role;
-
     private boolean enabled = false;
 
-    @ManyToMany(fetch = EAGER)
-    private Collection<Role> roles = new ArrayList<>();
+    @JsonIgnoreProperties(value = {"user"})
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Role> authorities;
+
+    @Override
+        public Collection<? extends GrantedAuthority> getAuthorities() {
+        return authorities.stream().collect(Collectors.toList());
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
 }
