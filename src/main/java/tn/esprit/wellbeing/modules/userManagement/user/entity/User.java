@@ -32,6 +32,8 @@ public class User implements UserDetails {
     private String username;
 
     private String email;
+    
+    private int pointsNumber;
 
     private int monthlyActive;
 

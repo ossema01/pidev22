@@ -51,5 +51,17 @@ public class BadgeRestController {
 	public Badge updateBadge(@RequestBody Badge badge) {
 		return badgeService.updateBadge(badge);
 	}
+	
+	// http://localhost:8090/pidev/retrieve-confirmed-badges
+	@GetMapping("/retrieve-confirmed-badges")
+		public List<Badge> retrieveAllConfirmedBadges() {
+			return badgeService.retrieveAllConfirmedBadges();
+		}
 
+	
+	// http://localhost:8090/pidev/retrieve-unconfirmed-badges
+		@GetMapping("/retrieve-unconfirmed-badges")
+			public List<Badge> retrieveAllUnConfirmedBadges() {
+				return badgeService.retrieveAllUnconfirmedBadges();
+			}
 }

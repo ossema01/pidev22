@@ -1,28 +1,48 @@
 package tn.esprit.wellbeing.modules.evaluation.models;
 
-import static javax.persistence.FetchType.EAGER;
-
-import java.util.ArrayList;
-import java.util.Collection;
-
 import javax.persistence.Entity;
-import javax.persistence.ManyToMany;
 
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import tn.esprit.wellbeing.models.SuperEntity;
 
 @Entity
-@AllArgsConstructor
-@NoArgsConstructor
 public class Badge extends SuperEntity {
 	
 	private String title;
-	
 	private String description;
-	
 	private int pointsNbrToGetBadge;
+	private int votesNumberNeeded;
+	private int currentVoteNumber;
+
 	
+	public Badge() {
+		super();
+	}
+
+	public Badge(String title, String description, int pointsNbrToGetBadge, int votesNumberNeeded,
+			int currentVoteNumber) {
+		super();
+		this.title = title;
+		this.description = description;
+		this.pointsNbrToGetBadge = pointsNbrToGetBadge;
+		this.votesNumberNeeded = votesNumberNeeded;
+		this.currentVoteNumber = currentVoteNumber;
+	}
+
+	public int getVotesNumberNeeded() {
+		return votesNumberNeeded;
+	}
+
+	public void setVotesNumberNeeded(int votesNumberNeeded) {
+		this.votesNumberNeeded = votesNumberNeeded;
+	}
+
+	public int getCurrentVoteNumber() {
+		return currentVoteNumber;
+	}
+
+	public void setCurrentVoteNumber(int currentVoteNumber) {
+		this.currentVoteNumber = currentVoteNumber;
+	}
 
 	public String getTitle() {
 		return title;
@@ -47,8 +67,5 @@ public class Badge extends SuperEntity {
 	public void setPointsNbrToGetBadge(int pointsNbrToGetBadge) {
 		this.pointsNbrToGetBadge = pointsNbrToGetBadge;
 	}
-	
-	
-	
 
 }

@@ -34,8 +34,8 @@ public class ReservationRestController {
 
 	// http://localhost:8090/pidev/add-reservation
 	@PostMapping("/add-reservation")
-	public Reservation addReservation(@RequestBody Reservation rsv) {
-		Reservation reservation = reservationService.addReservation(rsv);
+	public Reservation addReservation(@RequestBody Reservation rsv ,Long offerId) {
+		Reservation reservation = reservationService.addReservation(rsv, offerId);
 		return reservation;
 	}
 

@@ -10,12 +10,17 @@ import org.springframework.stereotype.Service;
 
 import tn.esprit.wellbeing.modules.evaluation.models.Badge;
 import tn.esprit.wellbeing.modules.evaluation.repositories.BadgeRepository;
+import tn.esprit.wellbeing.modules.userManagement.user.entity.User;
+import tn.esprit.wellbeing.modules.userManagement.user.services.UserService;
 
 @Service
 public class BadgeServiceImpl implements IBadgeService {
 
 	@Autowired
 	BadgeRepository badgeRepo;
+	
+	@Autowired
+	UserService userService;
 
 	private static final Logger l = LogManager.getLogger(BadgeServiceImpl.class);
 
@@ -98,6 +103,72 @@ public class BadgeServiceImpl implements IBadgeService {
 		}
 
 		return null;
+	}
+
+	@Override
+	public List<Badge> retrieveAllUnconfirmedBadges() {
+		List<Badge> unconfirmedBadges = null;
+		try {
+
+			l.info("In Method retrieveAllUnconfirmedBadges");
+			unconfirmedBadges = (List<Badge>) badgeRepo.findUnConfirmedBadges();
+			l.debug("connexion à la DB Ok :");
+			for (Badge unconfirmedBadge : unconfirmedBadges) {
+				l.debug("unconfirmedBadges :" + unconfirmedBadge.getTitle());
+			}
+			l.info("Out of Method retrieveAllUnconfirmedBadges with Success : " + unconfirmedBadges.size());
+		} catch (Exception e) {
+			l.error("Out of Method retrieveAllUnconfirmedBadges with Errors : " + e);
+		}
+
+		return unconfirmedBadges;
+	}
+
+	@Override
+	public List<Badge> retrieveAllConfirmedBadges() {
+		List<Badge> confirmedBadges = null;
+		try {
+
+			l.info("In Method retrieveAllConfirmedBadges");
+			confirmedBadges = (List<Badge>) badgeRepo.findConfirmedBadges();
+			l.debug("connexion à la DB Ok :");
+			for (Badge confirmedBadge : confirmedBadges) {
+				l.debug("unconfirmedBadges :" + confirmedBadge.getTitle());
+			}
+			l.info("Out of Method retrieveAllConfirmedBadges with Success : " + confirmedBadges.size());
+		} catch (Exception e) {
+			l.error("Out of Method retrieveAllConfirmedBadges with Errors : " + e);
+		}
+
+		return confirmedBadges;
+
+	}
+
+	@Override
+	public Badge retrieveUnconfirmedBadge(Long id) {
+		Optional<Badge> unconfirmedBadge = null;
+		try {
+			l.info("In Method retrieveUnconfirmedBadge");
+			unconfirmedBadge = badgeRepo.findById(id);
+			if (unconfirmedBadge.isPresent()) {
+				l.info("Out of Method retrieveUnconfirmedBadge with Success : " + unconfirmedBadge.get().getTitle());
+				return unconfirmedBadge.get();
+			}
+		} catch (Exception e) {
+			l.error("Out of Method retrieveUnconfirmedBadge with Errors : " + e);
+		}
+
+		return null;
+	}
+
+	@Override
+	public List<Badge> getUserBadges(String userName) {
+		
+		User user = userService.getUser(userName);
+		if (user == null) {
+			throw new RuntimeException("No user found with userName: " + userName);
+		}
+		return badgeRepo.getNoteBadges(user.getPointsNumber());
 	}
 
 }
