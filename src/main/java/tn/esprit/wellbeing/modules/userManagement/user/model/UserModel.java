@@ -3,6 +3,9 @@ package tn.esprit.wellbeing.modules.userManagement.user.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import tn.esprit.wellbeing.modules.userManagement.role.entity.Role;
+
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -10,18 +13,20 @@ import lombok.NoArgsConstructor;
 public class UserModel {
 
     private String firstName;
-
+    
     private String lastName;
 
     private String email;
 
     private String newEmail;
 
-    private String userName;
+    private String username;
 
     private String password;
 
     private String oldPassword;
 
     private String confirmPassword;
+
+    private List<String> roles;
 }

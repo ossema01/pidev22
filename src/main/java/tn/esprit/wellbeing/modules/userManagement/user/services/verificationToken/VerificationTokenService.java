@@ -1,6 +1,5 @@
 package tn.esprit.wellbeing.modules.userManagement.user.services.verificationToken;
 
-import tn.esprit.wellbeing.modules.userManagement.user.entity.ResetPasswordToken;
 import tn.esprit.wellbeing.modules.userManagement.user.entity.VerificationToken;
 
 public interface VerificationTokenService {

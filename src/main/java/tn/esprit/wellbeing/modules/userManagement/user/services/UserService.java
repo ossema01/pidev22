@@ -1,5 +1,8 @@
 package tn.esprit.wellbeing.modules.userManagement.user.services;
 
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import tn.esprit.wellbeing.modules.userManagement.role.entity.Role;
 import tn.esprit.wellbeing.modules.userManagement.user.entity.User;
 import tn.esprit.wellbeing.modules.userManagement.user.entity.VerificationToken;
@@ -7,12 +10,12 @@ import tn.esprit.wellbeing.modules.userManagement.user.model.UserModel;
 
 import java.util.List;
 
-public interface UserService {
+public interface UserService extends UserDetailsService {
     User saveUser(User user);
 
     Role saveRole(Role role);
 
-    void addRoleToUser(String userName, String roleName);
+    void addRolesToUser(String userName, String[] roles);
 
     User getUser(String userName);
 
@@ -39,4 +42,6 @@ public interface UserService {
     String passwordEncoder(String password);
 
     Boolean matchesPassword(String password, String encodedPassword);
+
+    UserDetails loadUserByUsername(String username) throws UsernameNotFoundException;
 }
