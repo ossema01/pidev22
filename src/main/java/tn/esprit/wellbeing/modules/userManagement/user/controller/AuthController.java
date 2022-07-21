@@ -2,6 +2,7 @@ package tn.esprit.wellbeing.modules.userManagement.user.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -33,8 +34,7 @@ public class AuthController {
     @Autowired
     private TokenProvider jwtTokenUtil;
 
-    @Autowired
-    private BCryptPasswordEncoder passwordEncoder;
+
 
     @PostMapping(value = "/login")
     public ResponseEntity<Object> login(@RequestBody LoginRequest request) {
@@ -42,7 +42,7 @@ public class AuthController {
         User user = (User) userService.loadUserByUsername(request.getUsername());
         log.info("User :: {}", user);
 
-        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+        if (!userService.matchesPassword(request.getPassword(), user.getPassword())) {
             return new ResponseEntity<>("Invalid username or password", HttpStatus.UNAUTHORIZED);
         }
 

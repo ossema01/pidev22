@@ -13,14 +13,12 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfiguration;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import tn.esprit.wellbeing.modules.userManagement.user.entity.User;
-import tn.esprit.wellbeing.modules.userManagement.user.services.UserServiceImpl;
+import tn.esprit.wellbeing.modules.userManagement.user.services.UserService;
 
 import java.util.List;
 
@@ -43,6 +41,9 @@ public class WebSecurityConfig extends WebSecurityConfiguration {
     @Autowired
     private UnauthorizedEntryPoint unauthorizedEntryPoint;
 
+    @Autowired
+    UserService userService;
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http, TokenProvider tokenProvider) throws Exception {
         http.httpBasic().and().cors().and().csrf().disable()
@@ -51,12 +52,12 @@ public class WebSecurityConfig extends WebSecurityConfiguration {
                 .anyRequest().authenticated().and()
                 .exceptionHandling().authenticationEntryPoint(unauthorizedEntryPoint).and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-        http.addFilterBefore(new JwtAuthenticationFilter(tokenProvider, userDetailsService()), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(new JwtAuthenticationFilter(tokenProvider), UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(UserServiceImpl userService, BCryptPasswordEncoder passwordEncoder) throws Exception {
+    public AuthenticationManager authenticationManager() throws Exception {
         return authentication -> {
             String username = authentication.getPrincipal().toString();
             String password = authentication.getCredentials().toString();
@@ -66,11 +67,6 @@ public class WebSecurityConfig extends WebSecurityConfiguration {
 
             return new UsernamePasswordAuthenticationToken(username, "", user.getAuthorities());
         };
-    }
-
-    @Bean
-    public BCryptPasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder(10);
     }
 
     @Bean
@@ -96,11 +92,6 @@ public class WebSecurityConfig extends WebSecurityConfiguration {
                         .allowCredentials(true);
             }
         };
-    }
-
-    @Bean
-    public UserDetailsService userDetailsService() {
-        return new UserServiceImpl();
     }
 
     @Bean

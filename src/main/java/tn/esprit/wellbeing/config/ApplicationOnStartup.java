@@ -9,18 +9,16 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import tn.esprit.wellbeing.modules.userManagement.user.entity.User;
-import tn.esprit.wellbeing.modules.userManagement.user.services.UserService;
+import tn.esprit.wellbeing.modules.userManagement.user.services.*;
 
 import java.util.List;
 
-@Component
 @Configuration
 @EnableScheduling
-@ConditionalOnProperty(name = "cheduling.enable", matchIfMissing = true)
+@ConditionalOnProperty(name = "scheduling.enable", matchIfMissing = true)
 public class ApplicationOnStartup implements ApplicationListener<ApplicationReadyEvent> {
 
-    @Autowired
-    private UserService userService;
+//    private UserService userService;
 
     @Override
     public void onApplicationEvent(ApplicationReadyEvent event) {
@@ -29,10 +27,10 @@ public class ApplicationOnStartup implements ApplicationListener<ApplicationRead
 
     @Scheduled(cron = "@monthly")
     void monthlyActiveUser() {
-        List<User> users = userService.getUsers();
-        for (User user : users) {
-            user.setMonthlyActive(0);
-        }
+//        List<User> users = userService.getUsers();
+//        for (User user : users) {
+//            user.setMonthlyActive(0);
+//        }
     }
 
     @Scheduled(cron = "@daily")

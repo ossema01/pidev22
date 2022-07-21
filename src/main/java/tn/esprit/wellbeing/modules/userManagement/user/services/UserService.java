@@ -44,4 +44,4 @@ public interface UserService extends UserDetailsService {
     Boolean matchesPassword(String password, String encodedPassword);
 
     UserDetails loadUserByUsername(String username) throws UsernameNotFoundException;
-    }
+}
