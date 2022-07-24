@@ -16,5 +16,6 @@ public interface IEventService {
 	List<User> findUsersWithSameInterests(String interest);
 	void acceptOccurenceRequest(Long eventId,Long OccRequestId);
 	void rejectOccurenceRequest(Long eventId,Long OccRequestId);
+	Event getEventOfTheMonth();
 
 }

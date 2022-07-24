@@ -30,35 +30,35 @@ public class BatchConfiguration {
   public StepBuilderFactory stepBuilderFactory;
 
   @Bean
-  public FlatFileItemReader<Event> reader() {
-    return new FlatFileItemReaderBuilder<Event>()
-      .name("eventItemReader")
+  public FlatFileItemReader<Activity> reader() {
+    return new FlatFileItemReaderBuilder<Activity>()
+      .name("activityItemReader")
       .resource(new ClassPathResource("sample-data.csv"))
       .delimited()
       .names(new String[]{"id","title", "description"})
-      .fieldSetMapper(new BeanWrapperFieldSetMapper<Event>() {{
-        setTargetType(Event.class);
+      .fieldSetMapper(new BeanWrapperFieldSetMapper<Activity>() {{
+        setTargetType(Activity.class);
       }})
       .build();
   }
 
   @Bean
-  public EventItemProcessor processor() {
-    return new EventItemProcessor();
+  public ActivityItemProcessor processor() {
+    return new ActivityItemProcessor();
   }
 
   @Bean
-  public JdbcBatchItemWriter<Event> writer(DataSource dataSource) {
-    return new JdbcBatchItemWriterBuilder<Event>()
+  public JdbcBatchItemWriter<Activity> writer(DataSource dataSource) {
+    return new JdbcBatchItemWriterBuilder<Activity>()
       .itemSqlParameterSourceProvider(new BeanPropertyItemSqlParameterSourceProvider<>())
-      .sql("INSERT INTO event (id,title, description) VALUES (:id, :title, :description)")
+      .sql("INSERT INTO activity (id,title, description) VALUES (:id, :title, :description)")
       .dataSource(dataSource)
       .build();
   }
   
   @Bean
   public Job importUserJob(JobCompletionNotificationListener listener, Step step1) {
-    return jobBuilderFactory.get("importEventJob")
+    return jobBuilderFactory.get("importActivityJob")
       .incrementer(new RunIdIncrementer())
       .listener(listener)
       .flow(step1)
@@ -67,9 +67,9 @@ public class BatchConfiguration {
   }
 
   @Bean
-  public Step step1(JdbcBatchItemWriter<Event> writer) {
+  public Step step1(JdbcBatchItemWriter<Activity> writer) {
     return stepBuilderFactory.get("step1")
-      .<Event, Event> chunk(10)
+      .<Activity, Activity> chunk(10)
       .reader(reader())
       .processor(processor())
       .writer(writer)

@@ -22,8 +22,14 @@ import tn.esprit.wellbeing.modules.userManagement.user.entity.User;
 
 @MappedSuperclass
 public class AbstractOccurence extends SuperEntity implements HasRating {
-    
+    private String theme;
 	private String title; 
+	public String getTheme() {
+		return theme;
+	}
+	public void setTheme(String theme) {
+		this.theme = theme;
+	}
 	private String description; 
 	 @Temporal(TemporalType.DATE)
 	@DateTimeFormat(pattern="dd/MM/yyyy")
@@ -40,19 +46,21 @@ public class AbstractOccurence extends SuperEntity implements HasRating {
 	@OneToMany
 	private Collection<FavoriteByUser> FavoriteByUserList = new ArrayList<>();
 	@OneToMany
-	private Collection<User> participants = new ArrayList<>();
+	private List<User> participants = new ArrayList<>();
 	
 	//private Long userId;
 
 
-	public Collection<User> getParticipants() {
-		return participants;
-	}
-	public void setParticipants(Collection<User> participants) {
-		this.participants = participants;
-	}
+
+
 	public String getTitle() {
 		return title;
+	}
+	public List<User> getParticipants() {
+		return participants;
+	}
+	public void setParticipants(List<User> participants) {
+		this.participants = participants;
 	}
 	public void setTitle(String title) {
 		this.title = title;
