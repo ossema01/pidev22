@@ -12,4 +12,12 @@ public interface IBadgeService {
 	Badge updateBadge(Badge badge);
 	Badge retrieveBadge(Long id);
 
+
+	List<Badge> retrieveAllUnconfirmedBadges(); 
+	List<Badge> retrieveAllConfirmedBadges(); 
+	Badge retrieveUnconfirmedBadge(Long id);
+	List<Badge> getUserBadges(String userName); 
+
+	
+	
 }

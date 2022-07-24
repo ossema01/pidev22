@@ -10,5 +10,9 @@ public class Activity extends AbstractOccurence{
 		super(id, title, description);
 		// TODO Auto-generated constructor stub
 	}
+	 public Activity() {
+			super();
+			// TODO Auto-generated constructor stub
+		}
 
 }

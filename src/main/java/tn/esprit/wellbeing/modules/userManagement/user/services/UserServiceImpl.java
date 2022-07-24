@@ -1,7 +1,12 @@
 package tn.esprit.wellbeing.modules.userManagement.user.services;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -11,30 +16,34 @@ import tn.esprit.wellbeing.modules.userManagement.user.entity.ResetPasswordToken
 import tn.esprit.wellbeing.modules.userManagement.user.entity.User;
 import tn.esprit.wellbeing.modules.userManagement.user.entity.VerificationToken;
 import tn.esprit.wellbeing.modules.userManagement.user.model.UserModel;
-import tn.esprit.wellbeing.modules.userManagement.user.services.resetPassword.ResetPasswordService;
 import tn.esprit.wellbeing.modules.userManagement.user.repository.UserRepository;
+import tn.esprit.wellbeing.modules.userManagement.user.services.resetPassword.ResetPasswordService;
 import tn.esprit.wellbeing.modules.userManagement.user.services.verificationToken.VerificationTokenService;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.UUID;
 
-@Service
-@RequiredArgsConstructor
 @Transactional
 @Slf4j
-public class UserServiceImpl implements UserService {
+@Service
+public class UserServiceImpl implements UserService, UserDetailsService {
 
-    private final UserRepository userRepository;
+    @Autowired
+    private UserRepository userRepository;
 
-    private final RoleRepository roleRepository;
+    @Autowired
+    private RoleRepository roleRepository;
 
-    private final VerificationTokenService verificationTokenService;
+    @Autowired
+    private VerificationTokenService verificationTokenService;
 
-    private final ResetPasswordService resetPasswordTokenService;
+    @Autowired
+    private ResetPasswordService resetPasswordTokenService;
 
-    private final PasswordEncoder passwordEncoder;
-
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Override
     public User saveUser(User user) {
@@ -47,16 +56,20 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void addRoleToUser(String userName, String roleName) {
-        log.info("Adding role {} to user {}", roleName, userName);
-        User user = userRepository.findByUserName(userName);
-        Role role = roleRepository.findByName(roleName);
-        user.getRoles().add(role);
+    public void addRolesToUser(String userName, String[] roles) {
+        log.info("Adding role {} to user {}", roles, userName);
+        User user = userRepository.findByUsername(userName);
+        for (String roleName : roles) {
+            Role role = new Role();
+            role.setRole(roleName);
+            role.setUser(user);
+            roleRepository.save(role);
+        }
     }
 
     @Override
     public User getUser(String userName) {
-        return userRepository.findByUserName(userName);
+        return userRepository.findByUsername(userName);
     }
 
     @Override
@@ -82,9 +95,18 @@ public class UserServiceImpl implements UserService {
             user.setEmail(model.getEmail());
             user.setFirstName(model.getFirstName());
             user.setLastName(model.getLastName());
-            user.setRole("USER");
+            user.setUsername(model.getUsername());
             user.setPassword(passwordEncoder(model.getPassword()));
+            user.setMonthlyActive(0);
             userRepository.save(user);
+            List<Role> userRoles = new ArrayList<>();
+            for (String roleName : model.getRoles()) {
+                Role role = new Role();
+                role.setRole(roleName);
+                role.setUser(user);
+                userRoles.add(role);
+            }
+            roleRepository.saveAll(userRoles);
             return user;
         }
         return null;
@@ -155,8 +177,26 @@ public class UserServiceImpl implements UserService {
     public String passwordEncoder(String password) {
         return passwordEncoder.encode(password);
     }
+
     @Override
     public Boolean matchesPassword(String password, String encodedPassword) {
         return passwordEncoder.matches(password, encodedPassword);
     }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        User user = userRepository.findByUsername(username);
+
+        if (user == null) {
+            throw new UsernameNotFoundException("Invalid username or password");
+        }
+
+        return user;
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder(10);
+    }
+
 }

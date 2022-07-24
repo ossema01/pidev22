@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import tn.esprit.wellbeing.modules.userManagement.email.EmailService;
 import tn.esprit.wellbeing.modules.userManagement.user.entity.User;
@@ -120,6 +121,7 @@ public class UserController {
         return ResponseEntity.ok().body("New password should not be equal to the last used password");
     }
 
+    @PreAuthorize("hasRole('USER')")
     @PostMapping("/update-profile")
     public ResponseEntity<String> updateUserProfile(@RequestBody UserModel userModel, final HttpServletRequest request) {
         User user = userService.findByEmail(userModel.getEmail());
