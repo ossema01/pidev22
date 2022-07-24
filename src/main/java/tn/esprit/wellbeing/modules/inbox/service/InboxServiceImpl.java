@@ -3,6 +3,7 @@ package tn.esprit.wellbeing.modules.inbox.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import tn.esprit.wellbeing.modules.inbox.InboxService;
@@ -15,6 +16,9 @@ public class InboxServiceImpl implements InboxService {
 
 	@Autowired
 	private MessageRepository repo;
+
+	@Autowired
+	private SimpMessagingTemplate simpMessagingTemplate;
 
 	@Override
 	public void sendMessage(Long userId, String body) {
@@ -29,7 +33,7 @@ public class InboxServiceImpl implements InboxService {
 	@Override
 	public void sendMessage(Message message) {
 		message = repo.save(message);
-		// send message in MQ
+		simpMessagingTemplate.convertAndSend("/topic/inbox-" + message.getUserId(), message);
 	}
 
 	@Override
