@@ -21,10 +21,10 @@ public class InboxServiceImpl implements InboxService {
 	private SimpMessagingTemplate simpMessagingTemplate;
 
 	@Override
-	public void sendMessage(Long userId, String body) {
+	public void sendMessage(String toUserName, String body) {
 		Message message = new Message();
 		message.setBody(body);
-		message.setUserId(userId);
+		message.setToUser(toUserName);
 		message.setStatus(MessageStatus.Created);
 		message = repo.save(message);
 		sendMessage(message);
@@ -33,20 +33,24 @@ public class InboxServiceImpl implements InboxService {
 	@Override
 	public void sendMessage(Message message) {
 		message = repo.save(message);
-		simpMessagingTemplate.convertAndSend("/topic/inbox-" + message.getUserId(), message);
+		message.computeSuggestions();
+		simpMessagingTemplate.convertAndSend("/topic/inbox-" + message.getToUser(), message);
+		message.setStatus(MessageStatus.Sent);
+		message = repo.save(message);
 	}
 
 	@Override
 	public List<Message> getInbox() {
-		Long userId = null; // get currentUserId
-		return repo.findByUserIdOrCreatedBy(userId, userId);
+		String userId = "hzerai"; // get currentUserId
+
+		return repo.findByToUserOrCreatedBy(userId, userId);
 	}
 
 	@Override
 	public List<Message> unreadMessages() {
-		Long userId = null; // get currentUserId
-		List<Message> messages = repo.findByUserIdAndMessageStatus(userId, MessageStatus.Sent);
-		messages.forEach(m -> repo.updateMessageStatusById(MessageStatus.Read, m.getId()));
+		String userId = "hzerai"; // get currentUserId
+		List<Message> messages = repo.findByToUserAndStatus(userId, MessageStatus.Sent);
+		messages.forEach(m -> updateMessageStatusById(MessageStatus.Read, m.getId()));
 		return messages;
 	}
 

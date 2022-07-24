@@ -65,7 +65,7 @@ public class ReservationServiceImpl implements IReservationService {
 			}
 			rsv_saved = reservationRepo.save(rsv);
 			String msg = "Your reservation is done successfully";
-			Long userName = rsv.getCreatedBy();
+			String userName = rsv.getCreatedBy();
 			Object params[] = null;
 			params[0] = msg;
 			params[1] = userName;

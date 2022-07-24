@@ -32,12 +32,12 @@ public class DefaultNotificationProvider implements NotificationProvider {
 	}
 
 	@Override
-	public Notification getNotification(HasNotifications entity, Long userId, String message) {
+	public Notification getNotification(HasNotifications entity, String userId, String message) {
 		if (userId == null || message == null) {
 			throw new NotificationException(String.format("%s is null", userId == null ? "userId" : "message"));
 		}
 		Notification notif = new Notification();
-		notif.setUserId(userId);
+		notif.setToUser(userId);
 		notif.setMessage(message);
 		return notif;
 	}
@@ -50,9 +50,9 @@ public class DefaultNotificationProvider implements NotificationProvider {
 	}
 
 	@Override
-	public Notification getNotification(Long userId, String message) {
+	public Notification getNotification(String userId, String message) {
 		Notification notif = new Notification();
-		notif.setUserId(userId);
+		notif.setToUser(userId);
 		notif.setMessage(message);
 		return notif;
 	}
@@ -65,9 +65,9 @@ public class DefaultNotificationProvider implements NotificationProvider {
 	}
 
 	@Override
-	public Notification getNotification(HasNotifications entity, Long userId, String message, NotificationType type) {
+	public Notification getNotification(HasNotifications entity, String userId, String message, NotificationType type) {
 		Notification notif = new Notification();
-		notif.setUserId(userId);
+		notif.setToUser(userId);
 		notif.setMessage(message);
 		notif.setType(type);
 		return notif;
@@ -80,9 +80,9 @@ public class DefaultNotificationProvider implements NotificationProvider {
 	}
 
 	@Override
-	public Notification getNotification(Long userId, String message, NotificationType type) {
+	public Notification getNotification(String userId, String message, NotificationType type) {
 		Notification notif = new Notification();
-		notif.setUserId(userId);
+		notif.setToUser(userId);
 		notif.setMessage(message);
 		notif.setType(type);
 		return notif;

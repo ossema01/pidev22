@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import tn.esprit.wellbeing.modules.notifications.HasNotifications;
@@ -28,6 +29,8 @@ public class NotificationServiceImpl implements NotificationService {
 	private NotificationRepository repo;
 	@Autowired
 	private UserRepository userRepo;
+	@Autowired
+	private SimpMessagingTemplate simpMessagingTemplate;
 
 	@Override
 	public void sendNotification(Object... params) {
@@ -48,10 +51,12 @@ public class NotificationServiceImpl implements NotificationService {
 			}
 		}
 
-		Notification notif = createNotificationUsingProvider(hasNotif, userId, message, type);
+		Notification notif = createNotificationUsingProvider(hasNotif, userRepo.findById(userId).get().getUsername(),
+				message, type);
 		if (notif == null) {
 			throw new NotificationException("Coudn't create notification using provider. Please check your paremeters");
 		}
+		notif = repo.save(notif);
 		if (notif.getType().equals(NotificationType.MAIL)) {
 			sendMail(notif);
 		} else {
@@ -60,11 +65,35 @@ public class NotificationServiceImpl implements NotificationService {
 
 	}
 
+	@Override
+	public void sendNotification(Notification notif) {
+		notif = repo.save(notif);
+		if (notif.getType().equals(NotificationType.MAIL)) {
+			sendMail(notif);
+		} else {
+			defaultSendNotif(notif);
+		}
+	}
+
+	public void sendNotification(String toUser, String text) {
+		Notification notif = createNotificationUsingProvider(null, toUser, text, NotificationType.DEFAULT);
+		if (notif == null) {
+			throw new NotificationException("Coudn't create notification using provider. Please check your paremeters");
+		}
+		notif = repo.save(notif);
+		if (notif.getType().equals(NotificationType.MAIL)) {
+			sendMail(notif);
+		} else {
+			defaultSendNotif(notif);
+		}
+	}
+
 	private void defaultSendNotif(Notification notif) {
+		simpMessagingTemplate.convertAndSend("/topic/notif-" + notif.getToUser(), notif.getMessage());
 
 	}
 
-	private Notification createNotificationUsingProvider(HasNotifications hasNotif, Long userId, String message,
+	private Notification createNotificationUsingProvider(HasNotifications hasNotif, String userId, String message,
 			NotificationType type) {
 		Notification notif;
 		NotificationProvider provider;
@@ -91,13 +120,13 @@ public class NotificationServiceImpl implements NotificationService {
 	}
 
 	@Override
-	public List<Notification> findNotificationByUserId(Long userId) {
-		return repo.findByUserId(userId);
+	public List<Notification> findNotificationByUserId(String userId) {
+		return repo.findByToUser(userId);
 	}
 
 	@Override
-	public List<Notification> findNotificationByUserIdAndStatus(Long userId, NotificationStatus status) {
-		return repo.findByUserIdAndStatus(userId, status);
+	public List<Notification> findNotificationByUserIdAndStatus(String userId, NotificationStatus status) {
+		return repo.findByToUserAndStatus(userId, status);
 	}
 
 	@Override
@@ -130,6 +159,12 @@ public class NotificationServiceImpl implements NotificationService {
 //		mimeMessageHelper.setText(notif.getMessage());
 //		mimeMessageHelper.setSubject(notif.getSubject());
 //		mailer.send(mimeMessage);
+	}
+
+	@Override
+	public List<Notification> getCurrentUserNotifications() {
+		String currentUser = "hzerai";
+		return repo.findByToUser(currentUser);
 	}
 
 }

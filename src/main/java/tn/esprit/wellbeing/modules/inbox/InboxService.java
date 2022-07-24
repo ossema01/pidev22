@@ -7,7 +7,7 @@ import tn.esprit.wellbeing.modules.inbox.data.MessageStatus;
 
 public interface InboxService {
 
-	void sendMessage(Long userId, String message);
+	void sendMessage(String toUserName, String message);
 
 	void sendMessage(Message message);
 

@@ -9,7 +9,7 @@ public class Notification extends SuperEntity {
 
 	private String message;
 
-	private Long userId;
+	private String toUser;
 
 	private NotificationStatus status;
 	
@@ -31,12 +31,12 @@ public class Notification extends SuperEntity {
 		this.message = message;
 	}
 
-	public Long getUserId() {
-		return userId;
+	public String getToUser() {
+		return toUser;
 	}
 
-	public void setUserId(Long userId) {
-		this.userId = userId;
+	public void setToUser(String toUser) {
+		this.toUser = toUser;
 	}
 
 	public NotificationStatus getStatus() {

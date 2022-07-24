@@ -5,6 +5,8 @@ import java.time.LocalDateTime;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
+import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
 
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
@@ -19,7 +21,7 @@ public abstract class SuperEntity {
 	private Long id;
 
 	@CreatedBy
-	private Long createdBy;
+	private String createdBy;
 
 	@LastModifiedBy
 	private String updatedBy;
@@ -38,11 +40,11 @@ public abstract class SuperEntity {
 		this.id = id;
 	}
 
-	public Long getCreatedBy() {
+	public String getCreatedBy() {
 		return createdBy;
 	}
 
-	public void setCreatedBy(Long createdBy) {
+	public void setCreatedBy(String createdBy) {
 		this.createdBy = createdBy;
 	}
 
@@ -69,15 +71,24 @@ public abstract class SuperEntity {
 	public void setUpdatedAt(LocalDateTime updatedAt) {
 		this.updatedAt = updatedAt;
 	}
+
 	public SuperEntity() {
 		super();
 	}
+
 	public SuperEntity(Long id) {
 		super();
 		this.id = id;
 	}
 
-	
-	
-	
+	@PrePersist
+	public void preInsert() {
+		this.createdAt = LocalDateTime.now();
+	}
+
+	@PreUpdate
+	public void preUpdate() {
+		this.updatedAt = LocalDateTime.now();
+	}
+
 }

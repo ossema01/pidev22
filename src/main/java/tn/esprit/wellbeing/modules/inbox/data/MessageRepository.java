@@ -11,9 +11,9 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface MessageRepository extends CrudRepository<Message, Long> {
 
-	List<Message> findByUserIdAndMessageStatus(Long userId, MessageStatus status);
+	List<Message> findByToUserAndStatus(String toUserId, MessageStatus status);
 
-	List<Message> findByUserIdOrCreatedBy(Long reciever, Long sender);
+	List<Message> findByToUserOrCreatedBy(String toUserId, String sender);
 
 	@Modifying
 	@Query("update Message m set m.status = :status where m.id = :id")

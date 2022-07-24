@@ -11,18 +11,18 @@ public interface NotificationProvider {
 
 	Notification getNotification(HasNotifications entity);
 
-	Notification getNotification(HasNotifications entity, Long userId, String message);
+	Notification getNotification(HasNotifications entity, String username, String message);
 
-	Notification getNotification(HasNotifications entity, Long userId, String message, NotificationType type);
+	Notification getNotification(HasNotifications entity, String username, String message, NotificationType type);
 
 	Notification getNotification(HasNotifications entity, String message);
 
 	Notification getNotification(HasNotifications entity, String message, NotificationType type);
 
-	Notification getNotification(HasNotifications entity, Long userId);
+	Notification getNotification(HasNotifications entity, Long username);
 
-	Notification getNotification(Long userId, String message);
+	Notification getNotification(String username, String message);
 
-	Notification getNotification(Long userId, String message, NotificationType type);
+	Notification getNotification(String username, String message, NotificationType type);
 
 }

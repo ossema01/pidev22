@@ -8,8 +8,8 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface NotificationRepository extends CrudRepository<Notification, Long> {
 
-	List<Notification> findByUserId(Long userId);
+	List<Notification> findByToUser(String toUser);
 
-	List<Notification> findByUserIdAndStatus(Long userId, NotificationStatus status);
+	List<Notification> findByToUserAndStatus(String toUser, NotificationStatus status);
 
 }

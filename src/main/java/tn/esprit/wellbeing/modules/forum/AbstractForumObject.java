@@ -20,7 +20,7 @@ import tn.esprit.wellbeing.modules.notifications.HasNotifications;
 @MappedSuperclass
 public class AbstractForumObject<T> extends SuperEntity implements HasNotifications, HasComments {
 
-	public static final Long ANONYMOUS_CREATOR = -1L;
+	public static final String ANONYMOUS_CREATOR = "\"This post is created anonymously\"";
 
 	private String title;
 
@@ -68,7 +68,7 @@ public class AbstractForumObject<T> extends SuperEntity implements HasNotificati
 	}
 
 	@Override
-	public Long getCreatedBy() {
+	public String getCreatedBy() {
 		/**
 		 * if the consumer of this API is an administrator, so the real creator can be
 		 * visible
