@@ -35,6 +35,9 @@ public class NotificationServiceImpl implements NotificationService {
 	@Override
 	public void sendNotification(Object... params) {
 
+		if (params == null || params.length < 2) {
+			throw new NotificationException("Wrong size of params");
+		}
 		HasNotifications hasNotif = null;
 		Long userId = null;
 		String message = null;
@@ -75,6 +78,7 @@ public class NotificationServiceImpl implements NotificationService {
 		}
 	}
 
+	@Override
 	public void sendNotification(String toUser, String text) {
 		Notification notif = createNotificationUsingProvider(null, toUser, text, NotificationType.DEFAULT);
 		if (notif == null) {

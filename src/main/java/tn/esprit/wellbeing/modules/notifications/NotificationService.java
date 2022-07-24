@@ -31,4 +31,6 @@ public interface NotificationService {
 
 	void forceChangeStatus(Notification notification, NotificationStatus toStatus);
 
+	void sendNotification(String toUser, String text);
+
 }
