@@ -35,8 +35,8 @@ public class DefaultNotificationProviderTest {
 	@Test
 	@Order(2)
 	public void testGetNotification_withParams_HasNotifications_UserId_Message() {
-		Notification notif = INSTANCE.getNotification(null, 1L, "Test Notif from Provider");
-		assertEquals(1L, notif.getUserId());
+		Notification notif = INSTANCE.getNotification(null, "hzerai", "Test Notif from Provider");
+		assertEquals("hzerai", notif.getToUser());
 		assertEquals("Test Notif from Provider", notif.getMessage());
 	}
 
@@ -49,8 +49,8 @@ public class DefaultNotificationProviderTest {
 	@Test
 	@Order(4)
 	public void testGetNotification_withParams_UserId_Message() {
-		Notification notif = INSTANCE.getNotification(1L, "Test Notif from Provider");
-		assertEquals(1L, notif.getUserId());
+		Notification notif = INSTANCE.getNotification("hzerai", "Test Notif from Provider");
+		assertEquals("hzerai", notif.getToUser());
 		assertEquals("Test Notif from Provider", notif.getMessage());
 	}
 

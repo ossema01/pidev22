@@ -29,7 +29,9 @@ import java.util.List;
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfiguration {
     private static final String[] WHITE_LIST_URLS = {
+    		"/**",
             "/auth/**",
+            "/inbox",
             "/register",
             "/resendVerifyToken*",
             "/verifyRegistration*",
