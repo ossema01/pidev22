@@ -166,5 +166,25 @@ public class EventServiceImpl implements IEventService {
         eventRepository.save(event);
         occurenceRequestRepository.save(occReq);
 	}
+	@Override
+	public Event getEventOfTheMonth() {
+		List<Event> events = null;
+		Event ev = null;
+		try {
+
+			l.info("In Method getEventOfTheMonth :");
+			events = (List<Event>) eventRepository.findAll();
+			ev = events.get(0);
+			for (Event event : events) {
+				if(event.getParticipants().size()>ev.getParticipants().size()) {
+					ev=event;
+				}
+			}
+			l.info("Out of Method getEventOfTheMonth with Success" + events.size());
+		} catch (Exception e) {
+			l.error("Out of Method getEventOfTheMonth with Errors : " + e);
+		}
+      return ev;
+	}
 
 }
