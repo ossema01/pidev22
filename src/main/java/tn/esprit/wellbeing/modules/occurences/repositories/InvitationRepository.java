@@ -6,6 +6,6 @@ import org.springframework.stereotype.Repository;
 import tn.esprit.wellbeing.modules.occurences.models.Invitation;
 
 @Repository
-public interface InvitationRepository extends CrudRepository<Invitation, String> {
+public interface InvitationRepository extends CrudRepository<Invitation, Long> {
 
 }

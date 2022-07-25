@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 public class Credentials {
 
     private String email;
+    private String newEmail;
     private String userName;
     private String password;
     private String confirmPassword;

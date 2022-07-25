@@ -55,7 +55,7 @@ public class InvitationServiceImpl implements IInvitationService {
 	}
 
 	@Override
-	public void deleteInvitation(String id) {
+	public void deleteInvitation(Long id) {
 		try {
 			l.info("In Method deleteInvitation :");
 			invitationRepository.deleteById(id);
@@ -84,7 +84,7 @@ public class InvitationServiceImpl implements IInvitationService {
 	}
 
 	@Override
-	public Invitation retrieveInvitation(String id) {
+	public Invitation retrieveInvitation(Long id) {
 		Optional<Invitation> invitation = null;
 		try {
 			l.info("In Method retrieveInvitation :");

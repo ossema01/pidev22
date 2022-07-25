@@ -8,14 +8,18 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.stereotype.Service;
+
+import tn.esprit.wellbeing.modules.occurences.models.Event;
 import tn.esprit.wellbeing.modules.occurences.models.Subscription;
+import tn.esprit.wellbeing.modules.occurences.repositories.EventRepository;
 import tn.esprit.wellbeing.modules.occurences.repositories.SubscriptionRepository;
 
 @Service
 public class SubscriptionServiceImpl implements ISubscriptionService {
 	@Autowired
 	SubscriptionRepository subscriptionRepository;
-
+	@Autowired
+	EventRepository eventRepository;
 	private static final Logger l = LogManager.getLogger(SubscriptionServiceImpl.class);
 
 	@Override
@@ -55,7 +59,7 @@ public class SubscriptionServiceImpl implements ISubscriptionService {
 	}
 
 	@Override
-	public void deleteSubscription(String id) {
+	public void deleteSubscription(Long id) {
 		try {
 			l.info("In Method deleteSubscription :");
 			subscriptionRepository.deleteById(id);
@@ -84,7 +88,7 @@ public class SubscriptionServiceImpl implements ISubscriptionService {
 	}
 
 	@Override
-	public Subscription retrieveSubscription(String id) {
+	public Subscription retrieveSubscription(Long id) {
 		Optional<Subscription> subscription = null;
 		try {
 			l.info("In Method retrieveOccurenceRequest :");
@@ -99,5 +103,13 @@ public class SubscriptionServiceImpl implements ISubscriptionService {
 		}
 		return null;
 
+	}
+
+	@Override
+	public void addSubscriptionToEvent(Long subscriptionId, Long eventId) {
+     Subscription subscription = subscriptionRepository.findById(subscriptionId).orElse(null);
+     Event event = eventRepository.findById(eventId).orElse(null);
+     event.getSubscriptionList().add(subscription);
+     eventRepository.save(event);
 	}
 }

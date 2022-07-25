@@ -3,11 +3,15 @@ package tn.esprit.wellbeing.modules.forum;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.*;
-import javax.persistence.CascadeType;
 
-import org.hibernate.annotations.*;
+import javax.persistence.Column;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.MappedSuperclass;
+
 import org.hibernate.annotations.Any;
+import org.hibernate.annotations.AnyMetaDef;
+import org.hibernate.annotations.MetaValue;
 
 import tn.esprit.wellbeing.models.SuperEntity;
 import tn.esprit.wellbeing.modules.feedback.comments.Comment;
@@ -20,7 +24,7 @@ import tn.esprit.wellbeing.modules.notifications.HasNotifications;
 @MappedSuperclass
 public class AbstractForumObject<T> extends SuperEntity implements HasNotifications, HasComments, HasReactions {
 
-	public static final String ANONYMOUS_CREATOR = "This post is created anonymously";
+	public static final String ANONYMOUS_CREATOR = "\"This post is created anonymously\"";
 
 	private String title;
 	
@@ -30,14 +34,10 @@ public class AbstractForumObject<T> extends SuperEntity implements HasNotificati
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Reaction> reactions = new ArrayList<>();
 
-	@Any( metaColumn = @Column( name = "content_type" ), fetch=FetchType.EAGER )
-	@AnyMetaDef(
-	        idType = "integer",
-	        metaType = "string",
-	        metaValues = {
-	            @MetaValue(value = "String", targetEntity = String.class),
-	            @MetaValue(value = "Survey", targetEntity = SurveyContent.class)
-	        })
+	@Any(metaColumn = @Column(name = "content_type"), fetch = FetchType.EAGER)
+	@AnyMetaDef(idType = "integer", metaType = "string", metaValues = {
+			@MetaValue(value = "String", targetEntity = String.class),
+			@MetaValue(value = "Survey", targetEntity = SurveyContent.class) })
 	@JoinColumn(name = "content_id")
 	private T content;
 

@@ -6,5 +6,5 @@ import tn.esprit.wellbeing.modules.userManagement.role.entity.Role;
 
 @Repository
 public interface RoleRepository extends CrudRepository<Role, Long> {
-    Role findByName(String name);
+    Role findByRole(String roleName);
 }
