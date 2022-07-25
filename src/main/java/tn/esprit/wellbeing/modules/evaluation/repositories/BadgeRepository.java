@@ -18,8 +18,8 @@ public interface BadgeRepository extends CrudRepository<Badge, Long>{
 	@Query("SELECT b FROM Badge b WHERE b.currentVoteNumber < b.votesNumberNeeded")
 	List<Badge> findUnConfirmedBadges();
 
-	@Query("SELECT b FROM Badge b WHERE b.currentVoteNumber >= b.votesNumberNeeded AND b.pointsNbrToGetBadge <= :note ")
-	List<Badge> getNoteBadges(@Param("note") int note); 
+	@Query("SELECT b FROM Badge b WHERE b.currentVoteNumber >= b.votesNumberNeeded AND b.pointsNbrToGetBadge >= :note ")
+	List<Badge> getUserBadges(@Param("note") int note); 
 	
 	
 	

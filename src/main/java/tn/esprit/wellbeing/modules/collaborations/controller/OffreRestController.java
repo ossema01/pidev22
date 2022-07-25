@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import tn.esprit.wellbeing.modules.collaborations.models.Offre;
@@ -51,5 +52,12 @@ public class OffreRestController {
 	public Offre updateOffre(@RequestBody Offre offer) {
 		return offreService.updateOffre(offer);
 	}
+	
+	// http://localhost:8090/pidev/add-rating-to-offer
+		@PostMapping("/add-rating")
+		public void addRating(@RequestParam("offre-id") Long offerId, @RequestParam ("rating") float rating ) {
+			offreService.addRating(offerId, rating);
+		
+		}
 
 }

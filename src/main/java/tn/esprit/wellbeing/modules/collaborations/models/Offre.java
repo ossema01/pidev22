@@ -3,19 +3,30 @@ package tn.esprit.wellbeing.modules.collaborations.models;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import tn.esprit.wellbeing.WellBeingApplication;
 import tn.esprit.wellbeing.models.SuperEntity;
+import tn.esprit.wellbeing.modules.feedback.comments.Comment;
 import tn.esprit.wellbeing.modules.feedback.ratings.HasRating;
 import tn.esprit.wellbeing.modules.feedback.ratings.Rating;
 import tn.esprit.wellbeing.modules.feedback.ratings.RatingByUser;
+import tn.esprit.wellbeing.modules.feedback.ratings.RatingService;
+import tn.esprit.wellbeing.modules.userManagement.user.entity.User;
 
 @Entity
 @AllArgsConstructor
@@ -34,14 +45,23 @@ public class Offre extends SuperEntity implements HasRating {
 
 	private int nbOfAvailablePlaces;
 
-	@OneToMany
-	private Collection<Reservation> rsvList = new ArrayList<>();
+	@OneToMany(fetch = FetchType.LAZY)
+	private Set<RatingByUser> ratings = new HashSet<>() ;
 
-	public Collection<Reservation> getRsvList() {
+	@OneToMany
+	private Set<Reservation> rsvList = new HashSet<>();
+	
+	
+	@Transient
+	
+	@JsonIgnore
+	private Rating totalRating;
+
+	public Set<Reservation> getRsvList() {
 		return rsvList;
 	}
 
-	public void setRsvList(Collection<Reservation> rsvList) {
+	public void setRsvList(Set<Reservation> rsvList) {
 		this.rsvList = rsvList;
 	}
 
@@ -87,26 +107,33 @@ public class Offre extends SuperEntity implements HasRating {
 
 	@Override
 	public Rating getTotalRating() {
-		// TODO Auto-generated method stub
-		return null;
+		this.totalRating = WellBeingApplication.context.getBean(RatingService.class).calculateRating(this);
+
+		if (this.totalRating == null) {
+			this.totalRating = new Rating(0, 0);
+		}
+		
+		System.out.print(this.totalRating);
+		return this.totalRating;
+
 	}
 
 	@Override
 	public Set<RatingByUser> getRatings() {
-		// TODO Auto-generated method stub
-		return null;
+
+		return this.ratings;
 	}
 
 	@Override
 	public void addRating(RatingByUser rating) {
-		// TODO Auto-generated method stub
+
+		this.ratings.add(rating);
 
 	}
 
 	@Override
 	public boolean removeRating(RatingByUser rating) {
-		// TODO Auto-generated method stub
-		return false;
+		return this.ratings.remove(rating);
 	}
 
 }

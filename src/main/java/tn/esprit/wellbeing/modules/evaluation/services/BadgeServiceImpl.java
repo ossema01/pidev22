@@ -168,7 +168,10 @@ public class BadgeServiceImpl implements IBadgeService {
 		if (user == null) {
 			throw new RuntimeException("No user found with userName: " + userName);
 		}
-		return badgeRepo.getNoteBadges(user.getPointsNumber());
+		return badgeRepo.getUserBadges(user.getPointsNumber());
 	}
+	
+	
+
 
 }
