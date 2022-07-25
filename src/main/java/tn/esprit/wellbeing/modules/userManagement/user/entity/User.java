@@ -8,6 +8,7 @@ import tn.esprit.wellbeing.modules.userManagement.role.entity.Role;
 
 import javax.persistence.*;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -36,6 +37,8 @@ public class User implements UserDetails {
     private int pointsNumber;
 
     private int monthlyActive;
+
+    private Date lastLogin;
 
     @Column(length = 60)
     private String password;

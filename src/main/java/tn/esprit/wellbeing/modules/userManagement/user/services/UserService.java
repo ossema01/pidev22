@@ -21,6 +21,8 @@ public interface UserService extends UserDetailsService {
 
     User updateUserProfile(User user);
 
+    void updateMonthlyActive(String username);
+
     List<User> getUsers();
 
     User findByEmail(String email);
@@ -42,6 +44,8 @@ public interface UserService extends UserDetailsService {
     String passwordEncoder(String password);
 
     Boolean matchesPassword(String password, String encodedPassword);
+
+    User getCurrentUser();
 
     UserDetails loadUserByUsername(String username) throws UsernameNotFoundException;
 }
