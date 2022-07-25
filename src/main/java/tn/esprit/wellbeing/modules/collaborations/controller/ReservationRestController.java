@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import tn.esprit.wellbeing.modules.collaborations.models.Reservation;
 import tn.esprit.wellbeing.modules.collaborations.services.IReservationService;
@@ -34,8 +35,8 @@ public class ReservationRestController {
 
 	// http://localhost:8090/pidev/add-reservation
 	@PostMapping("/add-reservation")
-	public Reservation addReservation(@RequestBody Reservation rsv) {
-		Reservation reservation = reservationService.addReservation(rsv);
+	public Reservation addReservation(@RequestBody Reservation rsv ,@RequestParam("offerId")Long offerId) {
+		Reservation reservation = reservationService.addReservation(rsv, offerId);
 		return reservation;
 	}
 

@@ -1,0 +1,118 @@
+<html>
+<head>
+<title>pidev websocket test</title>
+<script src="js/sockjs.js"></script>
+<script src="js/stomp.min.js"></script>
+<script type="text/javascript">
+	var stompClient = null;
+	var stompClient2 = null;
+
+	function setConnected(connected) {
+		document.getElementById('connect').disabled = connected;
+		document.getElementById('disconnect').disabled = !connected;
+		document.getElementById('conversationDiv').style.visibility = connected ? 'visible'
+				: 'hidden';
+		document.getElementById('response').innerHTML = '';
+	}
+
+	function connect() {
+		var username = document.getElementById('username').value;
+		var socket = new SockJS('/pidev/ws');
+		stompClient = Stomp.over(socket);
+		stompClient.connect({}, function(frame) {
+			setConnected(true);
+			console.log('Connected: ' + frame);
+			stompClient.subscribe('/topic/inbox-' + username, function(
+					messageOutput) {
+				showMessageOutput(messageOutput.body);
+			});
+		});
+		document.getElementById('connectedAS').innerHTML = "Connected as : <b>"
+				+ username + "</b>";
+
+	}
+
+	function disconnect() {
+		if (stompClient != null) {
+			stompClient.disconnect();
+		}
+		setConnected(false);
+		console.log("Disconnected");
+	}
+
+	function connect2() {
+		var username = document.getElementById('username').value;
+		var socket = new SockJS('/pidev/ws');
+		stompClient2 = Stomp.over(socket);
+		stompClient2.connect({}, function(frame) {
+			setConnected(true);
+			console.log('Connected: ' + frame);
+			stompClient.subscribe('/topic/notif-' + username, function(
+					messageOutput) {
+				showNotifOutput(messageOutput.body);
+			});
+		});
+		document.getElementById('connectedAS').innerHTML = "Connected as : <b>"
+				+ username + "</b>";
+
+	}
+
+	function disconnect2() {
+		if (stompClient2 != null) {
+			stompClient2.disconnect();
+		}
+		setConnected(false);
+		console.log("Disconnected");
+	}
+
+	function showMessageOutput(messageOutput) {
+		messageOutput = JSON.parse(messageOutput);
+		var response = document.getElementById('response');
+		var p = document.createElement('p');
+		p.style.wordWrap = 'break-word';
+		p.appendChild(document.createTextNode("You got a new message from "
+				+ messageOutput.createdBy));
+		p.appendChild(document.createElement('br'));
+		p.appendChild(document
+				.createTextNode("Message : " + messageOutput.body));
+		p.appendChild(document.createElement('br'));
+		p.appendChild(document.createTextNode("Suggested Replies :"
+				+ messageOutput.suggestedReplies));
+		response.appendChild(p);
+		response.appendChild(document.createElement('hr'));
+	}
+
+	function showNotifOutput(messageOutput) {
+		var response = document.getElementById('response');
+		var p = document.createElement('p');
+		p.style.wordWrap = 'break-word';
+		p.appendChild(document.createTextNode("You got a new notification : "
+				+ messageOutput));
+		response.appendChild(p);
+		response.appendChild(document.createElement('hr'));
+	}
+</script>
+</head>
+<body onload="disconnect()">
+	<div>
+		<div>
+			<p id="connectedAS">connect as
+			<p />
+		</div>
+		<br />
+		<div>
+			<input type="text" id="username" placeholder="username">
+			<button id="connect" onclick="connect(); connect2();">Connect</button>
+			<button id="disconnect" disabled="disabled"
+				onclick="disconnect(); disconnect2();">Disconnect</button>
+		</div>
+		<br />
+		<div id="conversationDiv">
+			<p>Recieved</p>
+			</hr>
+			<p id="response"></p>
+		</div>
+	</div>
+
+</body>
+</html>

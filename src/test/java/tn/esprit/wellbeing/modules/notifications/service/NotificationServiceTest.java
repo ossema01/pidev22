@@ -45,54 +45,55 @@ public class NotificationServiceTest {
 	@Test
 	@Order(3)
 	public void testSendNotification_withUserIdAndMessage() {
-		service.sendNotification("Notification message example", 1L);
+		service.sendNotification("hzerai", "Notification message example");
 	}
 
 	@Test
 	@Order(4)
 	public void testFindNotificationByUserId() {
-		List<Notification> notifications = service.findNotificationByUserId(1L);
+		List<Notification> notifications = service.findNotificationByUserId("hzerai");
 		assertEquals(1, notifications.size());
 		Notification currentNotif = notifications.iterator().next();
-		assertEquals(1L, currentNotif.getUserId());
+		assertEquals("hzerai", currentNotif.getToUser());
 		assertEquals("Notification message example", currentNotif.getMessage());
 	}
 
 	@Test
 	@Order(5)
 	public void testFindNotificationByUserIdNotFound() {
-		List<Notification> notifications = service.findNotificationByUserId(2L);
+		List<Notification> notifications = service.findNotificationByUserId("john");
 		assertEquals(0, notifications.size());
 	}
 
 	@Test
 	@Order(6)
 	public void testFindNotificationByUserIdAndStatus() {
-		List<Notification> notifications = service.findNotificationByUserIdAndStatus(1L, NotificationStatus.CREATED);
+		List<Notification> notifications = service.findNotificationByUserIdAndStatus("hzerai",
+				NotificationStatus.SENT);
 		Notification currentNotif = notifications.iterator().next();
-		assertEquals(1L, currentNotif.getUserId());
-		assertEquals(NotificationStatus.CREATED, currentNotif.getStatus());
+		assertEquals("hzerai", currentNotif.getToUser());
+		assertEquals(NotificationStatus.SENT, currentNotif.getStatus());
 	}
 
 	@Test
 	@Order(7)
 	public void testChangeStatus() {
-		List<Notification> notifications = service.findNotificationByUserId(1L);
+		List<Notification> notifications = service.findNotificationByUserId("hzerai");
 		Notification currentNotif = notifications.iterator().next();
-		assertEquals(NotificationStatus.CREATED, currentNotif.getStatus());
-		service.changeStatus(currentNotif);
-		currentNotif = service.findNotificationByUserId(1L).iterator().next();
 		assertEquals(NotificationStatus.SENT, currentNotif.getStatus());
+		service.changeStatus(currentNotif);
+		currentNotif = service.findNotificationByUserId("hzerai").iterator().next();
+		assertEquals(NotificationStatus.READ, currentNotif.getStatus());
 	}
 
 	@Test
 	@Order(8)
 	public void testForceChangeStatus() {
-		List<Notification> notifications = service.findNotificationByUserId(1L);
+		List<Notification> notifications = service.findNotificationByUserId("hzerai");
 		Notification currentNotif = notifications.iterator().next();
-		assertEquals(NotificationStatus.SENT, currentNotif.getStatus());
+		assertEquals(NotificationStatus.READ, currentNotif.getStatus());
 		service.forceChangeStatus(currentNotif, NotificationStatus.CREATED);
-		currentNotif = service.findNotificationByUserId(1L).iterator().next();
+		currentNotif = service.findNotificationByUserId("hzerai").iterator().next();
 		assertEquals(NotificationStatus.CREATED, currentNotif.getStatus());
 	}
 

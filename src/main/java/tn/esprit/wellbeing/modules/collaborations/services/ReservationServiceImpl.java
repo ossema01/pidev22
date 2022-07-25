@@ -6,14 +6,26 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import tn.esprit.wellbeing.modules.collaborations.models.Offre;
 import tn.esprit.wellbeing.modules.collaborations.models.Reservation;
 import tn.esprit.wellbeing.modules.collaborations.repositories.ReservationRepository;
+import tn.esprit.wellbeing.modules.notifications.NotificationService;
+import tn.esprit.wellbeing.modules.notifications.data.Notification;
+import tn.esprit.wellbeing.modules.notifications.data.NotificationType;
+import tn.esprit.wellbeing.modules.notifications.provider.NotificationProviderFactory;
 
 @Service
 public class ReservationServiceImpl implements IReservationService {
 
 	@Autowired
 	ReservationRepository reservationRepo;
+	
+	@Autowired
+     IOffreService offreService;
+	
+	@Autowired
+	NotificationService notifService;
 
 	private static final Logger l = LogManager.getLogger(ReservationServiceImpl.class);
 
@@ -37,12 +49,28 @@ public class ReservationServiceImpl implements IReservationService {
 	}
 
 	@Override
-	public Reservation addReservation(Reservation rsv) {
+	public Reservation addReservation(Reservation rsv, Long offerId) {
 		Reservation rsv_saved = null;
 
 		try {
 			l.info("In Method addReservation");
+			Offre offer = offreService.retrieveOffre(offerId);
+			if (offer ==null) {
+				throw new RuntimeException("No offer found with offerId: " +offerId) ;
+			}
+			int reservedPlaces = 0 ;
+			for (Reservation reservation : offer.getRsvList()) {
+				reservedPlaces += reservation.getNbrOfreservedPlaces();
+			}
+			reservedPlaces += rsv.getNbrOfreservedPlaces();
+			if (reservedPlaces > offer.getNbOfAvailablePlaces()) {
+				throw new RuntimeException("You cannot reserve for: " + rsv.getNbrOfreservedPlaces());
+			}
 			rsv_saved = reservationRepo.save(rsv);
+			String msg = "Your reservation for the offer is done successfully";
+			String userName = rsv.getCreatedBy();
+			Notification notif = NotificationProviderFactory.getDefaultProvider().getNotification(userName, msg, NotificationType.MAIL);
+			notifService.sendNotification(notif);
 			l.info("Out of Method addReservation with Success : " + rsv_saved.getId());
 
 		} catch (Exception e) {
