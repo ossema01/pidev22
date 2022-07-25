@@ -13,6 +13,8 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 @MappedSuperclass
 public abstract class SuperEntity {
 
@@ -27,9 +29,11 @@ public abstract class SuperEntity {
 	private String updatedBy;
 
 	@CreatedDate
+	@JsonFormat(pattern =  "yyyy-MM-dd HH:mm:ss")
 	private LocalDateTime createdAt;
 
 	@LastModifiedDate
+	@JsonFormat(pattern =  "yyyy-MM-dd HH:mm:ss")
 	private LocalDateTime updatedAt;
 
 	public Long getId() {
