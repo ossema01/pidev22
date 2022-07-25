@@ -1,5 +1,6 @@
 package tn.esprit.wellbeing.modules.occurences.services;
 
+import java.util.Date;
 import java.util.List;
 
 import tn.esprit.wellbeing.modules.occurences.models.Event;
@@ -17,5 +18,8 @@ public interface IEventService {
 	void acceptOccurenceRequest(Long eventId,Long OccRequestId);
 	void rejectOccurenceRequest(Long eventId,Long OccRequestId);
 	Event getEventOfTheMonth();
+	Event getEventWithMaxActivities();
+    Event getNearestEvent();
+    void getNearestEventAndSendSmsToUsers();
 
 }

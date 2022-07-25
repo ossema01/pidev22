@@ -1,6 +1,7 @@
 package tn.esprit.wellbeing.modules.occurences.services;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -9,6 +10,10 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.twilio.rest.api.v2010.account.Message;
+import com.twilio.rest.api.v2010.account.MessageCreator;
+import com.twilio.type.PhoneNumber;
+
 import tn.esprit.wellbeing.modules.occurences.OccurenceRequestStatus;
 import tn.esprit.wellbeing.modules.occurences.models.Activity;
 import tn.esprit.wellbeing.modules.occurences.models.Event;
@@ -16,6 +21,7 @@ import tn.esprit.wellbeing.modules.occurences.models.OccurenceRequest;
 import tn.esprit.wellbeing.modules.occurences.repositories.ActivityRepository;
 import tn.esprit.wellbeing.modules.occurences.repositories.EventRepository;
 import tn.esprit.wellbeing.modules.occurences.repositories.OccurenceRequestRepository;
+import tn.esprit.wellbeing.modules.occurences.sms.TwilioConfiguration;
 import tn.esprit.wellbeing.modules.userManagement.user.entity.User;
 import tn.esprit.wellbeing.modules.userManagement.user.repository.UserRepository;
 @Service
@@ -29,7 +35,8 @@ public class EventServiceImpl implements IEventService {
 	@Autowired
 	OccurenceRequestRepository occurenceRequestRepository;
 	private static final Logger l = LogManager.getLogger(EventServiceImpl.class);
-
+	@Autowired
+	private TwilioConfiguration twilioConfiguration;
 	@Override
 	public List<Event> retrieveAllEvents() {
 		List<Event> events = null;
@@ -186,5 +193,92 @@ public class EventServiceImpl implements IEventService {
 		}
       return ev;
 	}
+
+	@Override
+	public Event getEventWithMaxActivities() {
+		List<Event> events = null;
+		Event ev = null;
+		try {
+
+			l.info("In Method getEventWithMaxActivities :");
+			events = (List<Event>) eventRepository.findAll();
+			ev = events.get(0);
+			for (Event event : events) {
+				l.info("event" +event.getTitle(), event.getActivitiesList().size());
+				if(event.getActivitiesList().size()>ev.getActivitiesList().size()) {
+					l.info(" getEventWithMaxActivities event" +event.getTitle(), event.getActivitiesList().size());
+
+					ev=event;
+				}
+			}
+			l.info("Out of Method getEventWithMaxActivities with Success" + events.size());
+		} catch (Exception e) {
+			l.error("Out of Method getEventWithMaxActivities with Errors : " + e);
+		}
+      return ev;
+	}
+
+	@Override
+	public Event getNearestEvent() {
+		Event ev = null;
+		List<Event> events = null;
+		Date today = new Date();
+		try {
+
+			l.info("In Method getNearestEvent :");
+			events = (List<Event>) eventRepository.findAll();
+			ev = events.get(0);
+			long minDiff = -1, currentTime = today.getTime();
+
+			for (Event event : events) {
+				l.info("event" +event.getTitle(),event.getStartDate().getTime(),currentTime);
+				 long diff = Math.abs(currentTime - event.getStartDate().getTime());
+				    if ((minDiff == -1) || (diff < minDiff)) {
+						l.info("eventokkk" +event.getTitle(),event.getStartDate().getTime(),currentTime);
+
+				      minDiff = diff;
+				      ev = event;
+				    }
+			}
+			l.info("Out of Method getNearestEvent with Success" + events.size());
+		} catch (Exception e) {
+			l.error("Out of Method getNearestEvent with Errors : " + e);
+		}
+      return ev;
+		 
+	}
+
+
+    /**
+     * @param eventList
+     */
+    public void getNearestEventAndSendSmsToUsers() {
+		Iterable<User> usersList;
+        PhoneNumber from = new PhoneNumber(twilioConfiguration.getTrialNumber());
+        Event nearestEvent = null;
+        nearestEvent = this.getNearestEvent();
+		l.info("the getNearestEvent is" + nearestEvent.getTitle());
+
+    		//for (User user : nearestEvent.getParticipants()) {
+    			   String message =  "test test" ;//+ //user.getFirstName() // to replace email by name
+              /*  "\nWe inform you that the event "+nearestEvent.getTitle() +  "will occure soon on the ."//+nearestEvent.getStartDate().toString()
+                   + "\nBE READY NOW!";*/
+          // if(user.getPhoneNumber.toString()!=null){
+             //  if (isPhoneNumberValid(client.getNumTel().toString())) {
+                   MessageCreator creator = Message.creator(new PhoneNumber("+21653213368"), from, message);
+                   creator.create();
+             //  } else {
+                 //  throw new CBException("Phone number [" + client.getNumTel().toString() + "] is not a valid number");
+            //   }
+          // }else{
+            //   throw new CBException("Phone number is null");
+           //}
+    		//}
+         
+
+        
+    }
+   
+
 
 }

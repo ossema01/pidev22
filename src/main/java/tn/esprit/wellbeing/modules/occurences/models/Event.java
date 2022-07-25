@@ -5,6 +5,7 @@ import java.util.Collection;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -16,7 +17,7 @@ public class Event extends AbstractOccurence{
 	@OneToMany
 	private Collection<Subscription> subscriptionList = new ArrayList<>();
 	
-	@OneToMany
+	@OneToMany(fetch = FetchType.EAGER)
 	private Collection<Activity> activitiesList = new ArrayList<>();
 
 

@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import tn.esprit.wellbeing.modules.occurences.downloadPDF.PDFGenerator;
 import tn.esprit.wellbeing.modules.occurences.models.Event;
 import tn.esprit.wellbeing.modules.occurences.services.IEventService;
 import tn.esprit.wellbeing.modules.userManagement.user.entity.User;
@@ -20,7 +21,8 @@ import tn.esprit.wellbeing.modules.userManagement.user.entity.User;
 public class EventRestController {
 	@Autowired
 	IEventService eventService;
-
+	@Autowired
+	PDFGenerator pdfGenerator;
 	// http://localhost:8090/pidev/retrieve-all-events
 	@GetMapping("/retrieve-all-events")
 	public List<Event> retrieveAllEvents() {
@@ -81,4 +83,18 @@ public class EventRestController {
 		public void rejectOccurenceRequest(@PathVariable("event-id") Long eventId , @PathVariable("occReq-id") Long occReqId) {
 			 eventService.rejectOccurenceRequest(eventId,occReqId);
 		}
+		
+		//getNearestEventAndSendSmsToUsers
+		
+		@GetMapping("/get-nearestEvent-and-send-sms")
+     public void getNearestEventAndSendSmsToUsers() {
+			 eventService.getNearestEventAndSendSmsToUsers();
+	  }
+		
+	//generateReport
+		
+		@GetMapping("/generateReport")
+     public void generateReport() {
+			pdfGenerator.generatePdfReport();
+	  }
 }

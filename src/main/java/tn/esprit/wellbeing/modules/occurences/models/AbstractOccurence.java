@@ -45,7 +45,7 @@ public class AbstractOccurence extends SuperEntity implements HasRating {
 	private Collection<Invitation> invitationList = new ArrayList<>();
 	@OneToMany
 	private Collection<FavoriteByUser> FavoriteByUserList = new ArrayList<>();
-	@OneToMany
+	@OneToMany//(fetch = FetchType.EAGER)
 	private List<User> participants = new ArrayList<>();
 	
 	//private Long userId;
