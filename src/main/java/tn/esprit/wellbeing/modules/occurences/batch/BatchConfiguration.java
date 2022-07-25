@@ -1,4 +1,4 @@
-package tn.esprit.wellbeing.modules.occurences.models;
+package tn.esprit.wellbeing.modules.occurences.batch;
 
 import javax.sql.DataSource;
 
@@ -18,6 +18,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
+
+import tn.esprit.wellbeing.modules.occurences.models.Activity;
+import tn.esprit.wellbeing.modules.occurences.models.ActivityItemProcessor;
 
 @Configuration
 @EnableBatchProcessing
