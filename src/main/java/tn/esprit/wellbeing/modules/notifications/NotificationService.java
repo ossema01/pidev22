@@ -28,6 +28,8 @@ public interface NotificationService {
 	List<Notification> findNotificationByUserIdAndStatus(String userId, NotificationStatus status);
 
 	void changeStatus(Notification notification);
+	
+	Notification fireEvent(Long id);
 
 	void forceChangeStatus(Notification notification, NotificationStatus toStatus);
 

@@ -1,11 +1,13 @@
 package tn.esprit.wellbeing.modules.inbox.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
+import tn.esprit.wellbeing.modules.inbox.InboxException;
 import tn.esprit.wellbeing.modules.inbox.InboxService;
 import tn.esprit.wellbeing.modules.inbox.data.Message;
 import tn.esprit.wellbeing.modules.inbox.data.MessageRepository;
@@ -57,6 +59,29 @@ public class InboxServiceImpl implements InboxService {
 	@Override
 	public int updateMessageStatusById(MessageStatus status, Long id) {
 		return repo.updateMessageStatusById(status, id);
+	}
+
+	@Override
+	public Message fireEvent(Long id) {
+		Optional<Message> msg = repo.findById(id);
+		if (msg.isEmpty()) {
+			throw new InboxException("Message not found. ID = " + id);
+		}
+		Message message = msg.get();
+		switch (message.getStatus()) {
+		case Created:
+			message.setStatus(MessageStatus.Sent);
+			break;
+		case Sent:
+			message.setStatus(MessageStatus.Read);
+			break;
+		case Read:
+			message.setStatus(MessageStatus.Deleted);
+			break;
+		default:
+			break;
+		}
+		return repo.save(message);
 	}
 
 }

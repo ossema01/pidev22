@@ -17,4 +17,6 @@ public interface InboxService {
 
 	int updateMessageStatusById(MessageStatus status, Long id);
 
+	Message fireEvent(Long id);
+
 }

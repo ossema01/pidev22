@@ -1,10 +1,15 @@
 package tn.esprit.wellbeing.modules.notifications.service;
 
 import java.util.List;
+import java.util.Optional;
+
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
@@ -90,6 +95,8 @@ public class NotificationServiceImpl implements NotificationService {
 		} else {
 			defaultSendNotif(notif);
 		}
+		notif.setStatus(NotificationStatus.SENT);
+		notif = repo.save(notif);
 	}
 
 	private void defaultSendNotif(Notification notif) {
@@ -155,20 +162,47 @@ public class NotificationServiceImpl implements NotificationService {
 	}
 
 	private void sendMail(Notification notif) {
-//		MimeMessage mimeMessage = mailer.createMimeMessage();
-//		MimeMessageHelper mimeMessageHelper;
-//		mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
-//		mimeMessageHelper.setFrom(sender);
-//		mimeMessageHelper.setTo(userRepo.findById(notif.getCreatedBy()).getEmail());
-//		mimeMessageHelper.setText(notif.getMessage());
-//		mimeMessageHelper.setSubject(notif.getSubject());
-//		mailer.send(mimeMessage);
+		try {
+			MimeMessage mimeMessage = mailer.createMimeMessage();
+			MimeMessageHelper mimeMessageHelper;
+			mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
+			mimeMessageHelper.setFrom(sender);
+			mimeMessageHelper.setTo(userRepo.findByUsername(notif.getCreatedBy()).getEmail());
+			mimeMessageHelper.setText(notif.getMessage());
+			mimeMessageHelper.setSubject(notif.getMessage());
+			mailer.send(mimeMessage);
+		} catch (MessagingException e) {
+			throw new NotificationException(e);
+		}
 	}
 
 	@Override
 	public List<Notification> getCurrentUserNotifications() {
 		String currentUser = "hzerai";
 		return repo.findByToUser(currentUser);
+	}
+
+	@Override
+	public Notification fireEvent(Long id) {
+		Optional<Notification> notif = repo.findById(id);
+		if (notif.isEmpty()) {
+			throw new NotificationException("Notification not found. ID = " + id);
+		}
+		Notification notification = notif.get();
+		switch (notification.getStatus()) {
+		case CREATED:
+			notification.setStatus(NotificationStatus.SENT);
+			break;
+		case SENT:
+			notification.setStatus(NotificationStatus.READ);
+			break;
+		case READ:
+			notification.setStatus(NotificationStatus.DELETED);
+			break;
+		default:
+			break;
+		}
+		return repo.save(notification);
 	}
 
 }
