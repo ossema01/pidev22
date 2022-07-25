@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import tn.esprit.wellbeing.modules.evaluation.models.Badge;
@@ -51,17 +52,22 @@ public class BadgeRestController {
 	public Badge updateBadge(@RequestBody Badge badge) {
 		return badgeService.updateBadge(badge);
 	}
-	
+
 	// http://localhost:8090/pidev/retrieve-confirmed-badges
 	@GetMapping("/retrieve-confirmed-badges")
-		public List<Badge> retrieveAllConfirmedBadges() {
-			return badgeService.retrieveAllConfirmedBadges();
-		}
+	public List<Badge> retrieveAllConfirmedBadges() {
+		return badgeService.retrieveAllConfirmedBadges();
+	}
 
-	
 	// http://localhost:8090/pidev/retrieve-unconfirmed-badges
-		@GetMapping("/retrieve-unconfirmed-badges")
-			public List<Badge> retrieveAllUnConfirmedBadges() {
-				return badgeService.retrieveAllUnconfirmedBadges();
-			}
+	@GetMapping("/retrieve-unconfirmed-badges")
+	public List<Badge> retrieveAllUnConfirmedBadges() {
+		return badgeService.retrieveAllUnconfirmedBadges();
+	}
+
+	// http://localhost:8090/pidev/retrieve-user-badges
+	@GetMapping("/retrieve-user-badges")
+	public List<Badge> retrieveUserBadges(@RequestParam("userName")String userName) {
+		return badgeService.getUserBadges(userName);
+	}
 }

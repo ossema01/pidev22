@@ -11,6 +11,9 @@ import tn.esprit.wellbeing.modules.collaborations.models.Offre;
 import tn.esprit.wellbeing.modules.collaborations.models.Reservation;
 import tn.esprit.wellbeing.modules.collaborations.repositories.ReservationRepository;
 import tn.esprit.wellbeing.modules.notifications.NotificationService;
+import tn.esprit.wellbeing.modules.notifications.data.Notification;
+import tn.esprit.wellbeing.modules.notifications.data.NotificationType;
+import tn.esprit.wellbeing.modules.notifications.provider.NotificationProviderFactory;
 
 @Service
 public class ReservationServiceImpl implements IReservationService {
@@ -64,13 +67,10 @@ public class ReservationServiceImpl implements IReservationService {
 				throw new RuntimeException("You cannot reserve for: " + rsv.getNbrOfreservedPlaces());
 			}
 			rsv_saved = reservationRepo.save(rsv);
-			String msg = "Your reservation is done successfully";
+			String msg = "Your reservation for the offer is done successfully";
 			String userName = rsv.getCreatedBy();
-			Object params[] = null;
-			params[0] = msg;
-			params[1] = userName;
-			params[2] = rsv;
-			notifService.sendNotification(params);
+			Notification notif = NotificationProviderFactory.getDefaultProvider().getNotification(userName, msg, NotificationType.MAIL);
+			notifService.sendNotification(notif);
 			l.info("Out of Method addReservation with Success : " + rsv_saved.getId());
 
 		} catch (Exception e) {
