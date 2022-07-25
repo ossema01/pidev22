@@ -8,9 +8,10 @@ import org.springframework.stereotype.Service;
 import tn.esprit.wellbeing.modules.forum.exception.ObjectNotFoundException;
 import tn.esprit.wellbeing.modules.forum.models.Post;
 import tn.esprit.wellbeing.modules.forum.repository.PostRepository;
+import tn.esprit.wellbeing.modules.forum.service.PostService;
 
 @Service
-public class PostServiceImpl extends AbstractForumObjectServiceImpl<Post> {
+public class PostServiceImpl extends AbstractForumObjectServiceImpl<Post> implements PostService {
 
 	@Autowired
 	PostRepository repository;
