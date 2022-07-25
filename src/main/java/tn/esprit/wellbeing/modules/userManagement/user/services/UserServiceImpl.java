@@ -3,6 +3,8 @@ package tn.esprit.wellbeing.modules.userManagement.user.services;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -20,10 +22,7 @@ import tn.esprit.wellbeing.modules.userManagement.user.repository.UserRepository
 import tn.esprit.wellbeing.modules.userManagement.user.services.resetPassword.ResetPasswordService;
 import tn.esprit.wellbeing.modules.userManagement.user.services.verificationToken.VerificationTokenService;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Transactional
 @Slf4j
@@ -76,6 +75,17 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     public User updateUserProfile(User user) {
         userRepository.save(user);
         return user;
+    }
+
+    @Override
+    public void updateMonthlyActive(String username) {
+        User user = userRepository.findByUsername(username);
+        if (user.getLastLogin() != null && user.getLastLogin().compareTo(new Date()) != 0) {
+            log.info(" last login date: {} ", user.getLastLogin().compareTo(new Date()));
+            user.setMonthlyActive(user.getMonthlyActive() + 1);
+        }
+        user.setLastLogin(new Date());
+        userRepository.save(user);
     }
 
     @Override
@@ -181,6 +191,13 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public Boolean matchesPassword(String password, String encodedPassword) {
         return passwordEncoder.matches(password, encodedPassword);
+    }
+
+    @Override
+    public User getCurrentUser() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        User user = userRepository.findByUsername(auth.getName());
+        return user;
     }
 
     @Override

@@ -18,7 +18,7 @@ import java.util.List;
 @ConditionalOnProperty(name = "scheduling.enable", matchIfMissing = true)
 public class ApplicationOnStartup implements ApplicationListener<ApplicationReadyEvent> {
 
-//    private UserService userService;
+    private UserService userService;
 
     @Override
     public void onApplicationEvent(ApplicationReadyEvent event) {
@@ -27,10 +27,10 @@ public class ApplicationOnStartup implements ApplicationListener<ApplicationRead
 
     @Scheduled(cron = "@monthly")
     void monthlyActiveUser() {
-//        List<User> users = userService.getUsers();
-//        for (User user : users) {
-//            user.setMonthlyActive(0);
-//        }
+        List<User> users = userService.getUsers();
+        for (User user : users) {
+            user.setMonthlyActive(0);
+        }
     }
 
     @Scheduled(cron = "@daily")
