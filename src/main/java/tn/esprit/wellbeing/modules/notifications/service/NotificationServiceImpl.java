@@ -169,7 +169,7 @@ public class NotificationServiceImpl implements NotificationService {
 			mimeMessageHelper.setFrom(sender);
 			mimeMessageHelper.setTo(userRepo.findByUsername(notif.getCreatedBy()).getEmail());
 			mimeMessageHelper.setText(notif.getMessage());
-			mimeMessageHelper.setSubject(notif.getMessage());
+			mimeMessageHelper.setSubject("Notification from PIDEV");
 			mailer.send(mimeMessage);
 		} catch (MessagingException e) {
 			throw new NotificationException(e);

@@ -11,7 +11,7 @@ public class Notification extends SuperEntity {
 
 	private String toUser;
 
-	private NotificationStatus status;
+	private NotificationStatus status = NotificationStatus.CREATED;
 	
 	private NotificationType type = NotificationType.DEFAULT;
 
