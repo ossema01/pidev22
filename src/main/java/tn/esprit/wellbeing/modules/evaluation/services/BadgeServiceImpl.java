@@ -162,13 +162,14 @@ public class BadgeServiceImpl implements IBadgeService {
 	}
 
 	@Override
-	public List<Badge> getUserBadges(String userName) {
+	public List<Badge> getUserBadges(String username) {
 		
-		User user = userService.getUser(userName);
+		User user = userService.getUser(username);
 		if (user == null) {
-			throw new RuntimeException("No user found with userName: " + userName);
+			throw new RuntimeException("No user found with userName: " + username);
 		}
 		return badgeRepo.getUserBadges(user.getPointsNumber());
+		
 	}
 	
 	
