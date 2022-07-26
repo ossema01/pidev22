@@ -11,13 +11,12 @@ public interface AbstractForumObjectService<G> {
 	G save(G forumObject);
 	Collection<G> findAll();
 	void delete(G forumObject);
-	void comment(G forumObject,String commentContent);
-	void reply(G commentToReply,Comment comment, String replyContent);
+	void comment(Long forumObjectId,String commentContent);
+	void reply(Long commentToReplyId,String replyContent);
 	List<Comment> getAllComments(Long forumObjectId);
-	void suspendComments(G forumObjctId);
-	void activateComments(G forumObjctId);
-	void anonymize(G id);
-	void unAnonymize(G id);
-	void suspendNotification(G id);
-	void activateNotification(G id);
+	void suspendComments(Long forumObjctId);
+	void activateComments(Long forumObjctId);
+	void anonymize(Long id);
+	void unAnonymize(Long id);
+	
 }
