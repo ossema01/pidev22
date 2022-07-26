@@ -8,4 +8,5 @@ import tn.esprit.wellbeing.modules.forum.models.Article;
 @Repository
 public interface ArticleRepository extends CrudRepository<Article, Long> {
 
+	
 }

@@ -12,20 +12,20 @@ import tn.esprit.wellbeing.models.SuperEntity;
 import tn.esprit.wellbeing.modules.feedback.comments.Comment;
 import tn.esprit.wellbeing.modules.feedback.comments.CommentsService;
 import tn.esprit.wellbeing.modules.forum.exception.ObjectNotFoundException;
-import tn.esprit.wellbeing.modules.forum.models.Post;
-import tn.esprit.wellbeing.modules.forum.repository.PostRepository;
-import tn.esprit.wellbeing.modules.forum.service.PostService;
+import tn.esprit.wellbeing.modules.forum.models.Survey;
+import tn.esprit.wellbeing.modules.forum.repository.SurveyRepository;
+import tn.esprit.wellbeing.modules.forum.service.SurveyService;
 import tn.esprit.wellbeing.modules.notifications.NotificationService;
 import tn.esprit.wellbeing.modules.userManagement.user.entity.User;
 import tn.esprit.wellbeing.modules.userManagement.user.services.UserService;
 
 @Service
-public class PostServiceImpl implements PostService {
-	
+public class SurveyServiceImpl implements SurveyService{
+
 	private static final ApplicationContext context = WellBeingApplication.context;
 
 	@Autowired
-	PostRepository repository;
+	SurveyRepository repository;
 	
 	@Autowired
 	CommentsService commentService;
@@ -34,27 +34,27 @@ public class PostServiceImpl implements PostService {
 	UserService userService;
 	
 	@Override
-	public Post findById(Long id) {
+	public Survey findById(Long id) {
 		return repository.findById(id).orElseThrow(() -> new ObjectNotFoundException(id));
 	}
 
 	@Override
-	public Collection<Post> findAll() {
-		return (Collection<Post>) repository.findAll();
+	public Collection<Survey> findAll() {
+		return (Collection<Survey>) repository.findAll();
 	}
 
 	@Override
-	public Post save(Post object) {
+	public Survey save(Survey object) {
 		return repository.save(object);
 	}
 
 	@Override
-	public void delete(Post forumObject) {
+	public void delete(Survey forumObject) {
 		repository.delete(forumObject);
 	}
 
 	@Override
-	public void comment(Post forumObject, String commentContent) {
+	public void comment(Survey forumObject, String commentContent) {
 		commentService.addComment(forumObject, commentContent);
 		save(forumObject);
 		forumObject.getTaggedUsers()
@@ -67,7 +67,7 @@ public class PostServiceImpl implements PostService {
 	}
 
 	@Override
-	public void reply(Post commentToReply, Comment comment, String replyContent) {
+	public void reply(Survey commentToReply, Comment comment, String replyContent) {
 		commentService.addReply(commentToReply, comment, replyContent);
 		save(commentToReply);
 	}
@@ -78,21 +78,21 @@ public class PostServiceImpl implements PostService {
 	}
 
 	@Override
-	public void suspendComments(Post forumObjctId) {
+	public void suspendComments(Survey forumObjctId) {
 		if(userService.getCurrentUser().equals(forumObjctId.getCreatedBy())) {
 			repository.suspendComments(forumObjctId.getId());
 		}		
 	}
 
 	@Override
-	public void activateComments(Post forumObjctId) {
+	public void activateComments(Survey forumObjctId) {
 		if(userService.getCurrentUser().equals(forumObjctId.getCreatedBy())) {
 			repository.activateComments(forumObjctId.getId());
 		}	
 	}
 
 	@Override
-	public void anonymize(Post post) {
+	public void anonymize(Survey post) {
 		if(userService.getCurrentUser().equals(post.getCreatedBy())) {
 			repository.anonymize(post.getId());
 		}	
@@ -100,7 +100,7 @@ public class PostServiceImpl implements PostService {
 	}
 
 	@Override
-	public void unAnonymize(Post post) {
+	public void unAnonymize(Survey post) {
 		if(userService.getCurrentUser().equals(post.getCreatedBy())) {
 			repository.unAnonymize(post.getId());
 		}	
@@ -108,7 +108,7 @@ public class PostServiceImpl implements PostService {
 	}
 
 	@Override
-	public void suspendNotification(Post post) {
+	public void suspendNotification(Survey post) {
 		List<User> users = post.getDeactivatedNotificationUsers();
 		users.add(userService.getCurrentUser());
 		post.setDeactivatedNotificationUsers(users);
@@ -116,11 +116,10 @@ public class PostServiceImpl implements PostService {
 	}
 
 	@Override
-	public void activateNotification(Post post) {
+	public void activateNotification(Survey post) {
 		List<User> users = post.getDeactivatedNotificationUsers();
 		users.remove(userService.getCurrentUser());
 		post.setDeactivatedNotificationUsers(users);
 		save(post);
 	}
-
 }
