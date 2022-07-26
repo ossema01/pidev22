@@ -150,7 +150,7 @@ public class PDFGenerator {
 			table.getDefaultCell().setHorizontalAlignment(Element.ALIGN_CENTER);
 			table.getDefaultCell().setVerticalAlignment(Element.ALIGN_MIDDLE);
 			
-			table.addCell(event.getId().toString());
+			table.addCell(event.getStartDate().toString());
 			table.addCell(event.getTitle());
 			table.addCell(event.getTheme());
 			table.addCell(event.getDescription());
