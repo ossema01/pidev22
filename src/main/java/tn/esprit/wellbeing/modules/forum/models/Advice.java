@@ -5,6 +5,6 @@ import javax.persistence.Entity;
 import tn.esprit.wellbeing.modules.forum.AbstractForumObject;
 
 @Entity
-public class Post extends AbstractForumObject<String>{
-	
+public class Advice extends AbstractForumObject<String>{
+
 }
