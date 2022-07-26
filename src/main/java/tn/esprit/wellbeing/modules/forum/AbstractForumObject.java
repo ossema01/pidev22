@@ -3,20 +3,13 @@ package tn.esprit.wellbeing.modules.forum;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.MappedSuperclass;
-import javax.persistence.OneToMany;
-import javax.persistence.PostPersist;
-import javax.persistence.PostUpdate;
+
+import javax.persistence.*;
 
 import org.hibernate.annotations.Any;
 import org.hibernate.annotations.AnyMetaDef;
 import org.hibernate.annotations.MetaValue;
 
-import tn.esprit.wellbeing.WellBeingApplication;
 import tn.esprit.wellbeing.models.SuperEntity;
 import tn.esprit.wellbeing.modules.feedback.comments.Comment;
 import tn.esprit.wellbeing.modules.feedback.comments.HasComments;
@@ -24,25 +17,17 @@ import tn.esprit.wellbeing.modules.feedback.reactions.HasReactions;
 import tn.esprit.wellbeing.modules.feedback.reactions.Reaction;
 import tn.esprit.wellbeing.modules.forum.models.SurveyContent;
 import tn.esprit.wellbeing.modules.notifications.HasNotifications;
-import tn.esprit.wellbeing.modules.notifications.NotificationService;
-import tn.esprit.wellbeing.modules.userManagement.user.entity.User;
 
 @MappedSuperclass
 public class AbstractForumObject<T> extends SuperEntity implements HasNotifications, HasComments, HasReactions {
 
-	public static final String ANONYMOUS_CREATOR = "This post is created anonymously";
+	public static final String ANONYMOUS_CREATOR = "\"This post is created anonymously\"";
 
 	private String title;
-
-	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-	private List<User> deactivatedNotificationUsers = new ArrayList<>();
-
-	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-	private List<User> taggedUsers = new ArrayList<>();
-
+	
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Comment> comments = new ArrayList<>();
-
+	
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Reaction> reactions = new ArrayList<>();
 
@@ -56,40 +41,6 @@ public class AbstractForumObject<T> extends SuperEntity implements HasNotificati
 	private String topic;
 
 	private boolean anonymous;
-
-	private boolean suspendedComments;
-
-	public List<User> getDeactivatedNotificationUsers() {
-		return deactivatedNotificationUsers;
-	}
-
-	public void setDeactivatedNotificationUsers(List<User> deactivatedNotificationUsers) {
-		this.deactivatedNotificationUsers = deactivatedNotificationUsers;
-	}
-
-	public boolean isSuspendedComments() {
-		return suspendedComments;
-	}
-
-	public void setSuspendedComments(boolean suspendedComments) {
-		this.suspendedComments = suspendedComments;
-	}
-
-	public List<User> getTaggedUsers() {
-		return taggedUsers;
-	}
-
-	public void setTaggedUsers(List<User> taggedUsers) {
-		this.taggedUsers = taggedUsers;
-	}
-
-	public void setComments(List<Comment> comments) {
-		this.comments = comments;
-	}
-
-	public void setReactions(List<Reaction> reactions) {
-		this.reactions = reactions;
-	}
 
 	public String getTopic() {
 		return topic;
@@ -163,31 +114,6 @@ public class AbstractForumObject<T> extends SuperEntity implements HasNotificati
 	@Override
 	public boolean removeReaction(Reaction reaction) {
 		return reactions.remove(reaction);
-	}
-
-	@PostPersist
-	public void postPersist() {
-		String msg = "you have been tagged in the forum";
-		Object params[] = null;
-		params[0] = msg;
-		params[2] = this;
-		taggedUsers.forEach(e -> {
-			params[1] = e.getUsername();
-			WellBeingApplication.context.getBean(NotificationService.class).sendNotification(params);
-		});
-
-	}
-
-	@PostUpdate
-	public void postUpdate() {
-		String msg = "An update was made on a post !";
-		Object params[] = null;
-		params[0] = msg;
-		params[2] = this;
-		taggedUsers.forEach(e -> {
-			params[1] = e.getUsername();
-			WellBeingApplication.context.getBean(NotificationService.class).sendNotification(params);
-		});
 	}
 
 }

@@ -11,6 +11,7 @@ import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
+import tn.esprit.wellbeing.modules.occurences.downloadPDF.PDFGenerator;
 
 @SpringBootApplication
 @EnableSwagger2
@@ -19,7 +20,8 @@ public class WellBeingApplication {
 	
 	public static ApplicationContext context;
 
-	public static void main(String[] args) {
+	public static void main(String[] args) {		
+
 		context = SpringApplication.run(WellBeingApplication.class, args);
 	}
 

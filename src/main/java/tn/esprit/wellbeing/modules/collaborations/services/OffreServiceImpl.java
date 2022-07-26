@@ -8,9 +8,11 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import tn.esprit.wellbeing.WellBeingApplication;
 import tn.esprit.wellbeing.modules.collaborations.models.Offre;
 import tn.esprit.wellbeing.modules.collaborations.models.Reservation;
 import tn.esprit.wellbeing.modules.collaborations.repositories.OffreRepository;
+import tn.esprit.wellbeing.modules.feedback.ratings.RatingService;
 
 @Service
 public class OffreServiceImpl implements IOffreService {
@@ -18,6 +20,9 @@ public class OffreServiceImpl implements IOffreService {
 	@Autowired
 	OffreRepository offreRepo;
 
+	@Autowired
+	RatingService ratingService;
+	
 	private static final Logger l = LogManager.getLogger(OffreServiceImpl.class);
 
 	@Override
@@ -99,6 +104,14 @@ public class OffreServiceImpl implements IOffreService {
 		}
 
 		return null;
+	}
+
+	@Override
+	public void addRating(Long offerId, float rating) {
+
+		
+		var offer = retrieveOffre(offerId);
+		ratingService.addRating(offer, rating);
 	}
 
 }

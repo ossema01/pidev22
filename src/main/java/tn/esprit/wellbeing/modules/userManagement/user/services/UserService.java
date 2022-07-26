@@ -27,6 +27,10 @@ public interface UserService extends UserDetailsService {
 
     User findByEmail(String email);
 
+    User findByUsername(String username);
+
+    String blockUser(String username);
+
     User registerUser(UserModel model);
 
     void saveVerificationTokenForUser(String token, User user);

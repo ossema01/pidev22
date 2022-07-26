@@ -11,5 +11,6 @@ public interface IOffreService {
 	void deleteOffre(Long id);
 	Offre updateOffre(Offre offre);
 	Offre retrieveOffre(Long id);
+	void addRating(Long offerId, float rating);
 
 }

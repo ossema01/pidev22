@@ -16,7 +16,7 @@ public interface IBadgeService {
 	List<Badge> retrieveAllUnconfirmedBadges(); 
 	List<Badge> retrieveAllConfirmedBadges(); 
 	Badge retrieveUnconfirmedBadge(Long id);
-	List<Badge> getUserBadges(String userName); 
+	List<Badge> getUserBadges(String username); 
 
 	
 	

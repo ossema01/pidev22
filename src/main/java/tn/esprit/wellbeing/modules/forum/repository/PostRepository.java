@@ -1,8 +1,6 @@
 package tn.esprit.wellbeing.modules.forum.repository;
 
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import tn.esprit.wellbeing.modules.forum.models.Post;
@@ -21,5 +19,5 @@ public interface PostRepository extends CrudRepository<Post, Long>{
 
 	@Query("UPDATE post_  SET suspendedComments=1 WHERE id = :id ")
 	void suspendComments(@Param("id") Long forumObjctId);
-	
+
 }
