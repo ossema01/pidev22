@@ -67,7 +67,7 @@ public class BadgeRestController {
 
 	// http://localhost:8090/pidev/retrieve-user-badges
 	@GetMapping("/retrieve-user-badges")
-	public List<Badge> retrieveUserBadges(@RequestParam("userName")String userName) {
-		return badgeService.getUserBadges(userName);
+	public List<Badge> retrieveUserBadges(@RequestParam("username")String username) {
+		return badgeService.getUserBadges(username);
 	}
 }
