@@ -12,7 +12,7 @@ import tn.esprit.wellbeing.modules.feedback.reactions.HasReactions;
 import tn.esprit.wellbeing.modules.feedback.reactions.Reaction;
 
 @Entity
-public class Comment extends SuperEntity implements HasReactions {
+public class Comment extends SuperEntity implements HasReactions{
 
 	private String body;
 
