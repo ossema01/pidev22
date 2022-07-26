@@ -18,6 +18,7 @@ import tn.esprit.wellbeing.modules.userManagement.user.services.UserService;
 import tn.esprit.wellbeing.modules.userManagement.user.services.resetPassword.ResetPasswordService;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -131,7 +132,8 @@ public class UserController {
 
         if (user != null && user.isEnabled()) {
             if (userModel.getOldPassword() == null) {
-                return ResponseEntity.badRequest().body("Password password should not be null.");
+                return ResponseEntity.badRequest().body("Password" +
+                        " should not be null.");
             }
 
             if (!userService.matchesPassword(userModel.getOldPassword(), user.getPassword())) {
@@ -168,6 +170,34 @@ public class UserController {
         }
 
         return ResponseEntity.badRequest().body("User not verified, please check your email inbox.");
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @PostMapping("/block/{username}")
+    public ResponseEntity<String> blockUser(@PathVariable String username) {
+        return ResponseEntity.ok().body(userService.blockUser(username));
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @PostMapping("/bulk/block")
+    public ResponseEntity<String> bulkBlockUser(@RequestBody String[] usernames) {
+        List<String> wrongUsernames = new ArrayList<>();
+        for (String username :
+                usernames) {
+            String result = userService.blockUser(username);
+            if (result == "User not found, please verify the entered username.") {
+                wrongUsernames.add(username);
+            }
+        }
+
+        if (wrongUsernames.size() == usernames.length) {
+            return ResponseEntity.ok().body("Failed to block the given users, please verify the entered username.");
+        }
+
+        if (wrongUsernames.size() > 0) {
+            return ResponseEntity.ok().body("Users Blocked Successfully, except those: " + String.join(", ", wrongUsernames));
+        }
+        return ResponseEntity.ok().body("Users Blocked Successfully");
     }
 
     private void sendTokenMail(String email, String endpoint, String emailSubject, HttpServletRequest request, VerificationToken verificationToken) {

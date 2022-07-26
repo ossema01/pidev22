@@ -45,6 +45,10 @@ public class User implements UserDetails {
 
     private boolean enabled = false;
 
+    private boolean blocked = false;
+
+    private boolean archived = false;
+
     @JsonIgnoreProperties(value = {"user"})
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "user", cascade = CascadeType.ALL)
     private List<Role> authorities;

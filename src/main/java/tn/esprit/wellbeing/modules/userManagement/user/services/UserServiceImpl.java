@@ -22,6 +22,7 @@ import tn.esprit.wellbeing.modules.userManagement.user.repository.UserRepository
 import tn.esprit.wellbeing.modules.userManagement.user.services.resetPassword.ResetPasswordService;
 import tn.esprit.wellbeing.modules.userManagement.user.services.verificationToken.VerificationTokenService;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Transactional
@@ -80,9 +81,14 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public void updateMonthlyActive(String username) {
         User user = userRepository.findByUsername(username);
-        if (user.getLastLogin() != null && user.getLastLogin().compareTo(new Date()) != 0) {
-            log.info(" last login date: {} ", user.getLastLogin().compareTo(new Date()));
+        if (user.getLastLogin() == null) {
             user.setMonthlyActive(user.getMonthlyActive() + 1);
+        } else {
+            SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+            if (formatter.format(user.getLastLogin()).compareTo(formatter.format(new Date())) < 0) {
+                log.info(" last login date: {} ", user.getLastLogin().compareTo(new Date()));
+                user.setMonthlyActive(user.getMonthlyActive() + 1);
+            }
         }
         user.setLastLogin(new Date());
         userRepository.save(user);
@@ -99,6 +105,21 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
+    public User findByUsername(String username) {
+        return userRepository.findByUsername(username);
+    }
+
+    @Override
+    public String blockUser(String username) {
+        User user = findByUsername(username);
+        if (user == null) {
+            return "User not found, please verify the entered username.";
+        }
+        user.setBlocked(true);
+        return "User Blocked Successfully";
+    }
+
+    @Override
     public User registerUser(UserModel model) {
         if (model.getPassword().equals(model.getConfirmPassword())) {
             User user = new User();
@@ -109,14 +130,16 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             user.setPassword(passwordEncoder(model.getPassword()));
             user.setMonthlyActive(0);
             userRepository.save(user);
-            List<Role> userRoles = new ArrayList<>();
-            for (String roleName : model.getRoles()) {
-                Role role = new Role();
-                role.setRole(roleName);
-                role.setUser(user);
-                userRoles.add(role);
+            if (model.getRoles() != null) {
+                List<Role> userRoles = new ArrayList<>();
+                for (String roleName : model.getRoles()) {
+                    Role role = new Role();
+                    role.setRole(roleName);
+                    role.setUser(user);
+                    userRoles.add(role);
+                }
+                roleRepository.saveAll(userRoles);
             }
-            roleRepository.saveAll(userRoles);
             return user;
         }
         return null;
