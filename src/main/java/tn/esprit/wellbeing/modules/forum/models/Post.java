@@ -4,7 +4,7 @@ import javax.persistence.Entity;
 
 import tn.esprit.wellbeing.modules.forum.AbstractForumObject;
 
-@Entity
+@Entity(name = "post_")
 public class Post extends AbstractForumObject<String>{
 	
 }
