@@ -14,6 +14,7 @@ import tn.esprit.wellbeing.modules.notifications.NotificationService;
 import tn.esprit.wellbeing.modules.notifications.data.Notification;
 import tn.esprit.wellbeing.modules.notifications.data.NotificationType;
 import tn.esprit.wellbeing.modules.notifications.provider.NotificationProviderFactory;
+import tn.esprit.wellbeing.modules.userManagement.user.services.UserService;
 
 @Service
 public class ReservationServiceImpl implements IReservationService {
@@ -25,7 +26,12 @@ public class ReservationServiceImpl implements IReservationService {
      IOffreService offreService;
 	
 	@Autowired
+	UserService userService;
+	
+	@Autowired
 	NotificationService notifService;
+	
+	
 
 	private static final Logger l = LogManager.getLogger(ReservationServiceImpl.class);
 
@@ -50,9 +56,7 @@ public class ReservationServiceImpl implements IReservationService {
 
 	@Override
 	public Reservation addReservation(Reservation rsv, Long offerId) {
-		Reservation rsv_saved = null;
 
-		try {
 			l.info("In Method addReservation");
 			Offre offer = offreService.retrieveOffre(offerId);
 			if (offer ==null) {
@@ -66,19 +70,15 @@ public class ReservationServiceImpl implements IReservationService {
 			if (reservedPlaces > offer.getNbOfAvailablePlaces()) {
 				throw new RuntimeException("You cannot reserve for: " + rsv.getNbrOfreservedPlaces());
 			}
-			rsv_saved = reservationRepo.save(rsv);
-			String msg = "Your reservation for the offer is done successfully";
-			String userName = rsv.getCreatedBy();
+			offer.addReservation(rsv);
+			offreService.updateOffre(offer);
+			String msg = "Your reservation for the offer "+ offer.getTitle() +" is done successfully, thanks for your interest";
+			String userName = userService.getCurrentUser().getUsername();
 			Notification notif = NotificationProviderFactory.getDefaultProvider().getNotification(userName, msg, NotificationType.MAIL);
 			notifService.sendNotification(notif);
-			l.info("Out of Method addReservation with Success : " + rsv_saved.getId());
-
-		} catch (Exception e) {
-			l.error("Out of Method addReservation with Errors : " + e);
-		}
-
-		return rsv_saved;
+		return rsv;
 	}
+
 
 	@Override
 	public void deleteReservation(Long id) {

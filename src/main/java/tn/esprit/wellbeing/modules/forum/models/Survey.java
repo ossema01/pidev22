@@ -20,8 +20,6 @@ public class Survey extends AbstractForumObject {
 
 	public void setQuestions(List<SurveyQuestion> questions) {
 		this.questions = questions;
-	}	
-	
-	
+	}
 
 }

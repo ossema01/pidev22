@@ -2,12 +2,14 @@ package tn.esprit.wellbeing.config;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import tn.esprit.wellbeing.modules.notifications.NotificationService;
+import tn.esprit.wellbeing.modules.notifications.data.Notification;
+import tn.esprit.wellbeing.modules.notifications.provider.NotificationProviderFactory;
 import tn.esprit.wellbeing.modules.userManagement.user.entity.User;
 import tn.esprit.wellbeing.modules.userManagement.user.services.UserService;
 
@@ -21,6 +23,13 @@ public class ApplicationOnStartup implements ApplicationListener<ApplicationRead
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private NotificationService notificationService;
+
+    private String subject = "";
+
+    private String body = "";
 
     @Override
     public void onApplicationEvent(ApplicationReadyEvent event) {
@@ -37,25 +46,30 @@ public class ApplicationOnStartup implements ApplicationListener<ApplicationRead
         }
     }
 
-    @Scheduled(cron = "@daily")
+    @Scheduled(cron = "0 * * * * *")
     void warnUser() {
         LocalDate today = LocalDate.now();
         List<User> users = userService.getUsers();
         for (User user : users) {
-            if (today.minusMonths(12) == user.getLastLogin()) {
-
+            log.info("schedule {}, {}, {}", today.minusMonths(12).compareTo(user.getLastLogin()), today.minusMonths(12), user.getLastLogin());
+            if (user.getLastLogin() != null && today.minusMonths(12).compareTo(user.getLastLogin()) == 0) {
+                Notification notif = NotificationProviderFactory.getDefaultProvider().getEmailNotification(user.getUsername(), subject, body);
+                notificationService.sendSystemNotification(user.getEmail(), notif);
             }
         }
     }
 
-    @Scheduled(cron = "@daily")
+    @Scheduled(cron = "0 * * * * *")
     void secondWarnUser() {
         LocalDate today = LocalDate.now();
 
         List<User> users = userService.getUsers();
         for (User user : users) {
-            if (today.minusMonths(13) == user.getLastLogin()) {
-                
+            log.info("schedule {}, {}, {}", today.minusMonths(13).compareTo(user.getLastLogin()), today.minusMonths(13), user.getLastLogin());
+
+            if (user.getLastLogin() != null && today.minusMonths(13).compareTo(user.getLastLogin()) == 0) {
+                Notification notif = NotificationProviderFactory.getDefaultProvider().getEmailNotification(user.getUsername(), subject, body);
+                notificationService.sendSystemNotification(user.getEmail(), notif);
             }
         }
     }
@@ -66,7 +80,7 @@ public class ApplicationOnStartup implements ApplicationListener<ApplicationRead
 
         List<User> users = userService.getUsers();
         for (User user : users) {
-            if (today.minusMonths(14) == user.getLastLogin()) {
+            if (user.getLastLogin() != null && today.minusMonths(14).compareTo(user.getLastLogin()) == 0) {
                 user.setArchived(true);
                 userService.saveUser(user);
             }
