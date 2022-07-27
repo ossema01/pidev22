@@ -77,6 +77,18 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
+    public void deleteUser(String username) {
+        userRepository.deleteByUsername(username);
+    }
+
+    @Override
+    public void deleteUsers(String[] userNamesList) {
+        for (String username : userNamesList) {
+            userRepository.deleteByUsername(username);
+        }
+    }
+
+    @Override
     public User updateUserProfile(User user) {
         userRepository.save(user);
         return user;

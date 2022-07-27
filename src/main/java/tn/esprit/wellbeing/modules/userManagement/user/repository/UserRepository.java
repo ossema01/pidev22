@@ -13,4 +13,6 @@ public interface UserRepository extends CrudRepository<User, Long> {
     User findUserById(Long id);
 
     User[] findAllByOrderByMonthlyActiveDesc();
+
+    void deleteByUsername(String username);
 }
