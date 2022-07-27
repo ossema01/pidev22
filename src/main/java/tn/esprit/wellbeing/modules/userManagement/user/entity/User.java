@@ -7,6 +7,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import tn.esprit.wellbeing.modules.userManagement.role.entity.Role;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -33,12 +34,12 @@ public class User implements UserDetails {
     private String username;
 
     private String email;
-    
+
     private int pointsNumber;
 
     private int monthlyActive;
 
-    private Date lastLogin;
+    private LocalDate lastLogin;
 
     @Column(length = 60)
     private String password;
@@ -49,12 +50,17 @@ public class User implements UserDetails {
 
     private boolean archived = false;
 
+    @ElementCollection
+    private List<String> interests;
+
+    private String phoneNumber;
+
     @JsonIgnoreProperties(value = {"user"})
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "user", cascade = CascadeType.ALL)
     private List<Role> authorities;
 
     @Override
-        public Collection<? extends GrantedAuthority> getAuthorities() {
+    public Collection<? extends GrantedAuthority> getAuthorities() {
         return authorities.stream().collect(Collectors.toList());
     }
 

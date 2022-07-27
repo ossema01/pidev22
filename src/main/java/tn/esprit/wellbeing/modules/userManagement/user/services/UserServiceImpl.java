@@ -22,8 +22,8 @@ import tn.esprit.wellbeing.modules.userManagement.user.repository.UserRepository
 import tn.esprit.wellbeing.modules.userManagement.user.services.resetPassword.ResetPasswordService;
 import tn.esprit.wellbeing.modules.userManagement.user.services.verificationToken.VerificationTokenService;
 
-import java.text.SimpleDateFormat;
 import java.util.*;
+import java.time.LocalDate;
 
 @Transactional
 @Slf4j
@@ -82,16 +82,20 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     public void updateMonthlyActive(String username) {
         User user = userRepository.findByUsername(username);
         if (user.getLastLogin() == null) {
-            user.setMonthlyActive(user.getMonthlyActive() + 1);
+            user.setMonthlyActive(1);
         } else {
-            SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
-            if (formatter.format(user.getLastLogin()).compareTo(formatter.format(new Date())) < 0) {
-                log.info(" last login date: {} ", user.getLastLogin().compareTo(new Date()));
+            if (user.getLastLogin().compareTo(LocalDate.now()) < 0) {
+                log.info(" last login date: {} ", user.getLastLogin().compareTo(LocalDate.now()));
                 user.setMonthlyActive(user.getMonthlyActive() + 1);
             }
         }
-        user.setLastLogin(new Date());
+        user.setLastLogin(LocalDate.now());
         userRepository.save(user);
+    }
+
+    @Override
+    public User[] getMonthlyActiveUsers() {
+        return userRepository.findAllByOrderByMonthlyActiveDesc();
     }
 
     @Override
