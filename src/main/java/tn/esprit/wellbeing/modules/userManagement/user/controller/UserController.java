@@ -182,14 +182,13 @@ public class UserController {
     @PostMapping("/bulk/block")
     public ResponseEntity<String> bulkBlockUser(@RequestBody String[] usernames) {
         List<String> wrongUsernames = new ArrayList<>();
-        for (String username :
-                usernames) {
+        for (String username : usernames) {
             String result = userService.blockUser(username);
             if (result == "User not found, please verify the entered username.") {
                 wrongUsernames.add(username);
             }
         }
-
+        log.info("wrong size: {}, usernames length: {}", wrongUsernames.size(), usernames.length);
         if (wrongUsernames.size() == usernames.length) {
             return ResponseEntity.ok().body("Failed to block the given users, please verify the entered username.");
         }
@@ -198,6 +197,13 @@ public class UserController {
             return ResponseEntity.ok().body("Users Blocked Successfully, except those: " + String.join(", ", wrongUsernames));
         }
         return ResponseEntity.ok().body("Users Blocked Successfully");
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/admin/monthly-active")
+    public ResponseEntity<User[]> monthlyActiveUsers() {
+        User[] users = userService.getMonthlyActiveUsers();
+        return ResponseEntity.ok().body(users);
     }
 
     private void sendTokenMail(String email, String endpoint, String emailSubject, HttpServletRequest request, VerificationToken verificationToken) {

@@ -23,6 +23,8 @@ public interface UserService extends UserDetailsService {
 
     void updateMonthlyActive(String username);
 
+    User[] getMonthlyActiveUsers();
+
     List<User> getUsers();
 
     User findByEmail(String email);
