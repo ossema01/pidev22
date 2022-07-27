@@ -5,6 +5,17 @@ import javax.persistence.Entity;
 import tn.esprit.wellbeing.modules.forum.AbstractForumObject;
 
 @Entity
-public class Article extends AbstractForumObject<String>{
+public class Article extends AbstractForumObject {
 
+	private String source;
+
+	public String getSource() {
+		return source;
+	}
+
+	public void setSource(String source) {
+		this.source = source;
+	}
+	
+	
 }

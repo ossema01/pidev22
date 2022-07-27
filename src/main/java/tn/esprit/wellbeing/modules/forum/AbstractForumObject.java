@@ -19,7 +19,7 @@ import tn.esprit.wellbeing.modules.forum.models.SurveyContent;
 import tn.esprit.wellbeing.modules.notifications.HasNotifications;
 
 @MappedSuperclass
-public class AbstractForumObject<T> extends SuperEntity implements HasNotifications, HasComments, HasReactions {
+public class AbstractForumObject extends SuperEntity implements HasNotifications, HasComments, HasReactions {
 
 	public static final String ANONYMOUS_CREATOR = "\"This post is created anonymously\"";
 
@@ -36,7 +36,7 @@ public class AbstractForumObject<T> extends SuperEntity implements HasNotificati
 			@MetaValue(value = "String", targetEntity = String.class),
 			@MetaValue(value = "Survey", targetEntity = SurveyContent.class) })
 	@JoinColumn(name = "content_id")
-	private T content;
+	private String content;
 
 	private String topic;
 
@@ -50,11 +50,11 @@ public class AbstractForumObject<T> extends SuperEntity implements HasNotificati
 		this.topic = topic;
 	}
 
-	public T getContent() {
+	public String getContent() {
 		return content;
 	}
 
-	public void setContent(T content) {
+	public void setContent(String content) {
 		this.content = content;
 	}
 

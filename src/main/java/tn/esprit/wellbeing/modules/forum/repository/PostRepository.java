@@ -7,6 +7,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import tn.esprit.wellbeing.modules.forum.models.Post;
+import tn.esprit.wellbeing.modules.userManagement.user.entity.User;
 
 @Repository
 public interface PostRepository extends CrudRepository<Post, Long>{
@@ -26,5 +27,7 @@ public interface PostRepository extends CrudRepository<Post, Long>{
 	@Modifying
 	@Query("UPDATE post_  SET suspendedComments=1 WHERE id = :id ")
 	void suspendComments(@Param("id") Long forumObjctId);
+
+	User[] findAllByCreatedBy(String username);
 	
 }

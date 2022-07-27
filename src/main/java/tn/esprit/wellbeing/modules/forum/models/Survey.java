@@ -5,6 +5,8 @@ import javax.persistence.Entity;
 import tn.esprit.wellbeing.modules.forum.AbstractForumObject;
 
 @Entity
-public class Survey extends AbstractForumObject<SurveyContent> {
+public class Survey extends AbstractForumObject {
+	
+	private SurveyContent surveyContent;
 
 }

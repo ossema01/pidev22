@@ -9,6 +9,7 @@ import tn.esprit.wellbeing.modules.forum.exception.ObjectNotFoundException;
 import tn.esprit.wellbeing.modules.forum.models.Post;
 import tn.esprit.wellbeing.modules.forum.repository.PostRepository;
 import tn.esprit.wellbeing.modules.forum.service.PostService;
+import tn.esprit.wellbeing.modules.userManagement.user.entity.User;
 
 @Service
 public class PostServiceImpl extends AbstractForumObjectServiceImpl<Post> implements PostService {
@@ -34,5 +35,10 @@ public class PostServiceImpl extends AbstractForumObjectServiceImpl<Post> implem
 	@Override
 	public void delete(Post forumObject) {
 		repository.delete(forumObject);
+	}
+
+	@Override
+	public User[] findByCreatedBy(String username) {
+		return repository.findAllByCreatedBy(username);
 	}
 }
