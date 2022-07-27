@@ -30,7 +30,7 @@ import java.util.List;
 public class WebSecurityConfig extends WebSecurityConfiguration {
     private static final String[] WHITE_LIST_URLS = {
             "/auth/**",
-            "/export/offers/excel",
+            "/export/offers/excel*",
             "/inbox",
             "/register",
             "/resendVerifyToken*",
