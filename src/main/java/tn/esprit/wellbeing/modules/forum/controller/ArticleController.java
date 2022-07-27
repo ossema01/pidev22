@@ -9,38 +9,34 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
 import tn.esprit.wellbeing.modules.feedback.comments.Comment;
-import tn.esprit.wellbeing.modules.forum.models.Post;
-import tn.esprit.wellbeing.modules.forum.service.PostService;
+import tn.esprit.wellbeing.modules.forum.models.Article;
+import tn.esprit.wellbeing.modules.forum.service.ArticleService;
 
-@RestController()
-@RequestMapping("post")
-public class PostController implements AbstractForumObjectController<Post>{
+public class ArticleController implements AbstractForumObjectController<Article>{
 	
 	@Autowired
-	PostService service;
+	ArticleService service;
 
 	@GetMapping("/{id}")
-	public Post findById(@PathVariable("id") Long id) {
+	public Article findById(@PathVariable("id") Long id) {
 		return service.findById(id);
 	}
 	
 	@GetMapping()
-	public Collection<Post> findAll() {
+	public Collection<Article> findAll() {
 		return service.findAll();
 	}
 	
 	@PostMapping()
-	public Post save(@RequestBody Post object) {
+	public Article save(@RequestBody Article object) {
 		return service.save(object);
 	}
 
 	@Override
 	@DeleteMapping()
-	public void delete(@RequestBody Post forumObject) {
+	public void delete(@RequestBody Article forumObject) {
 		service.delete(forumObject);
 		
 	}
@@ -55,7 +51,7 @@ public class PostController implements AbstractForumObjectController<Post>{
 	@Override
 	@PostMapping("/{id}/reply/{replyContent}")
 	public void reply(@PathVariable("id") Long forumObjectId,@RequestBody Comment commentToReply,@PathVariable("replyContent") String replyContent) {
-		Post post = findById(forumObjectId);
+		Article post = findById(forumObjectId);
 		service.reply(post, commentToReply, replyContent);		
 	}
 
@@ -92,6 +88,4 @@ public class PostController implements AbstractForumObjectController<Post>{
 		
 	}
 	
-	
-
 }
