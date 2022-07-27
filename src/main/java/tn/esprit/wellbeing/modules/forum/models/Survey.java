@@ -8,5 +8,13 @@ import tn.esprit.wellbeing.modules.forum.AbstractForumObject;
 public class Survey extends AbstractForumObject {
 	
 	private SurveyContent surveyContent;
+	
+	public SurveyContent getSurveyContent() {
+		return surveyContent;
+	}
+
+	public void setSurveyContent(SurveyContent surveyContent) {
+		this.surveyContent = surveyContent;
+	}
 
 }
