@@ -112,6 +112,7 @@ public class OffreServiceImpl implements IOffreService {
 		
 		var offer = retrieveOffre(offerId);
 		ratingService.addRating(offer, rating);
+		offreRepo.save(offer);
 	}
 
 }
