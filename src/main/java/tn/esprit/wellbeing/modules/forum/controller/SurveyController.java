@@ -10,37 +10,35 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
 import tn.esprit.wellbeing.modules.feedback.comments.Comment;
-import tn.esprit.wellbeing.modules.forum.models.Post;
-import tn.esprit.wellbeing.modules.forum.service.PostService;
+import tn.esprit.wellbeing.modules.forum.models.Survey;
+import tn.esprit.wellbeing.modules.forum.service.SurveyService;
 
-@RestController()
-@RequestMapping("post")
-public class PostController implements AbstractForumObjectController<Post>{
-	
+@RequestMapping("survey")
+public class SurveyController implements AbstractForumObjectController<Survey> {
+
 	@Autowired
-	PostService service;
+	SurveyService service;
 
 	@GetMapping("/{id}")
-	public Post findById(@PathVariable("id") Long id) {
+	public Survey findById(@PathVariable("id") Long id) {
 		return service.findById(id);
 	}
 	
 	@GetMapping()
-	public Collection<Post> findAll() {
+	public Collection<Survey> findAll() {
 		return service.findAll();
 	}
 	
 	@PostMapping()
-	public Post save(@RequestBody Post object) {
+	public Survey save(@RequestBody Survey object) {
 		return service.save(object);
 	}
 
 	@Override
 	@DeleteMapping()
-	public void delete(@RequestBody Post forumObject) {
+	public void delete(@RequestBody Survey forumObject) {
 		service.delete(forumObject);
 		
 	}
@@ -55,7 +53,7 @@ public class PostController implements AbstractForumObjectController<Post>{
 	@Override
 	@PostMapping("/{id}/reply/{replyContent}")
 	public void reply(@PathVariable("id") Long forumObjectId,@RequestBody Comment commentToReply,@PathVariable("replyContent") String replyContent) {
-		Post post = findById(forumObjectId);
+		Survey post = findById(forumObjectId);
 		service.reply(post, commentToReply, replyContent);		
 	}
 
@@ -94,4 +92,6 @@ public class PostController implements AbstractForumObjectController<Post>{
 	
 	
 
+	
+	
 }
