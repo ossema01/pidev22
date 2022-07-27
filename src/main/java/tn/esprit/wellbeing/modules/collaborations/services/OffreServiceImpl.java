@@ -1,5 +1,6 @@
 package tn.esprit.wellbeing.modules.collaborations.services;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -8,6 +9,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import net.bytebuddy.dynamic.loading.PackageDefinitionStrategy.Definition.Undefined;
 import tn.esprit.wellbeing.WellBeingApplication;
 import tn.esprit.wellbeing.modules.collaborations.models.Offre;
 import tn.esprit.wellbeing.modules.collaborations.models.Reservation;
@@ -77,14 +79,10 @@ public class OffreServiceImpl implements IOffreService {
 	public Offre updateOffre(Offre offer) {
 		Offre offerUpdated = null;
 
-		try {
 			l.info("In Method offerUpdated");
 			offerUpdated = offreRepo.save(offer);
 			l.info("Out of Method offerUpdated with Success : " + offerUpdated.getId());
-
-		} catch (Exception e) {
-			l.error("Out of Method offerUpdated with Errors : " + e);
-		}
+		
 
 		return offerUpdated;
 	}
@@ -113,6 +111,17 @@ public class OffreServiceImpl implements IOffreService {
 		var offer = retrieveOffre(offerId);
 		ratingService.addRating(offer, rating);
 		offreRepo.save(offer);
+	}
+	
+	@Override
+	public List<Offre> exportAllOffersByDate(Date dateBefore, Date dateAfter) {
+		if (dateBefore == null  &&  dateAfter == null) {
+			return retrieveAllOffers();
+
+		}
+		
+		return offreRepo.findByOfferDateBetween(dateBefore, dateAfter);
+
 	}
 
 }

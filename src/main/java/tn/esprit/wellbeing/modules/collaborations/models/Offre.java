@@ -49,6 +49,7 @@ public class Offre extends SuperEntity implements HasRating {
 	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private Set<RatingByUser> ratings = new HashSet<>() ;
 
+
 	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private Set<Reservation> rsvList = new HashSet<>();
 	
@@ -133,6 +134,11 @@ public class Offre extends SuperEntity implements HasRating {
 	@Override
 	public boolean removeRating(RatingByUser rating) {
 		return this.ratings.remove(rating);
+	}
+	
+	public void addReservation(Reservation rsv) {
+		
+		this.rsvList.add(rsv);
 	}
 
 }
