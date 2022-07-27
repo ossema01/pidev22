@@ -44,7 +44,6 @@ public class WellBeingApplication {
 
 	@Configuration
 	public class WebAdapterConfig implements WebMvcConfigurer {
-
 		@Override
 		public void addViewControllers(ViewControllerRegistry registry) {
 			registry.addViewController("/websockettest").setViewName("forward:/index.html");
