@@ -205,7 +205,7 @@ public class UserController {
     @PreAuthorize("hasRole('HR')")
     @DeleteMapping("/hr/user/{username}")
     public ResponseEntity<String> deleteUser(@PathVariable String username) {
-        userService.deleteUser(username);
+         userService.deleteUser(username);
         return ResponseEntity.ok().body("User was Deleted");
     }
     @PreAuthorize("hasRole('HR')")

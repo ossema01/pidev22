@@ -43,6 +43,14 @@ public class AuthController {
             return new ResponseEntity<>("Invalid username or password", HttpStatus.UNAUTHORIZED);
         }
 
+        if (user.isBlocked() == true) {
+            return new ResponseEntity<>("User is blocked.", HttpStatus.UNAUTHORIZED);
+        }
+
+        if (user.isArchived() == true) {
+            return new ResponseEntity<>("User is archived.", HttpStatus.UNAUTHORIZED);
+        }
+
 
         final Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
