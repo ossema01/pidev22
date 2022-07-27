@@ -11,6 +11,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import tn.esprit.wellbeing.modules.userManagement.role.entity.Role;
 import tn.esprit.wellbeing.modules.userManagement.role.repository.RoleRepository;
@@ -228,6 +229,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         return passwordEncoder.matches(password, encodedPassword);
     }
 
+    @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
     @Override
     public User getCurrentUser() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();

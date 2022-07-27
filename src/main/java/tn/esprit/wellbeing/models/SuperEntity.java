@@ -15,6 +15,9 @@ import org.springframework.data.annotation.LastModifiedDate;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
+import tn.esprit.wellbeing.WellBeingApplication;
+import tn.esprit.wellbeing.modules.userManagement.user.services.UserService;
+
 @MappedSuperclass
 public abstract class SuperEntity {
 
@@ -87,11 +90,13 @@ public abstract class SuperEntity {
 
 	@PrePersist
 	public void preInsert() {
+		this.createdBy = WellBeingApplication.context.getBean(UserService.class).getCurrentUser().getUsername();
 		this.createdAt = LocalDateTime.now();
 	}
 
 	@PreUpdate
 	public void preUpdate() {
+		this.updatedBy = WellBeingApplication.context.getBean(UserService.class).getCurrentUser().getUsername();
 		this.updatedAt = LocalDateTime.now();
 	}
 
