@@ -17,7 +17,6 @@ import java.util.List;
 @Component
 @EnableScheduling
 @Slf4j
-@ConditionalOnProperty(name = "scheduling.enable", matchIfMissing = true)
 public class ApplicationOnStartup implements ApplicationListener<ApplicationReadyEvent> {
 
     @Autowired
