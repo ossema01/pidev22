@@ -22,7 +22,7 @@ public class PostController {
 	PostService service;
 	
 	@GetMapping("/{id}")
-	public AbstractForumObject<String> findById(@PathVariable Long id) {
+	public AbstractForumObject findById(@PathVariable Long id) {
 		return service.findById(id);
 	}
 	
