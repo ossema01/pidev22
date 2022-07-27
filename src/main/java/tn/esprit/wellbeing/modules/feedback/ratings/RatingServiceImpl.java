@@ -1,18 +1,32 @@
 package tn.esprit.wellbeing.modules.feedback.ratings;
 
+import java.util.Optional;
 import java.util.OptionalDouble;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import tn.esprit.wellbeing.modules.userManagement.user.services.UserService;
 
 @Service
 public class RatingServiceImpl implements RatingService {
+	
+	@Autowired 
+	UserService userService;
 
 	public void addRating(HasRating entity, float rating) {
 		if (entity == null) {
 			return;
 		}
-
-		RatingByUser ratingByUser = new RatingByUser();
+		RatingByUser ratingByUser = null;
+		Optional< RatingByUser> ratingByUserOptional = entity.getRatings().stream().filter(r -> r.getCreatedBy().equals(userService.getCurrentUser().getUsername())).findFirst();
+		if (ratingByUserOptional.isPresent()) {
+			ratingByUser = ratingByUserOptional.get();
+			entity.getRatings().remove(ratingByUser);
+		}else {
+			ratingByUser = new RatingByUser();
+		}
+	
 		ratingByUser.setRate(rating);
 		entity.addRating(ratingByUser);
 	}
