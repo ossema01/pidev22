@@ -14,6 +14,7 @@ import tn.esprit.wellbeing.modules.notifications.NotificationService;
 import tn.esprit.wellbeing.modules.notifications.data.Notification;
 import tn.esprit.wellbeing.modules.notifications.data.NotificationType;
 import tn.esprit.wellbeing.modules.notifications.provider.NotificationProviderFactory;
+import tn.esprit.wellbeing.modules.userManagement.user.services.UserService;
 
 @Service
 public class ReservationServiceImpl implements IReservationService {
@@ -23,6 +24,9 @@ public class ReservationServiceImpl implements IReservationService {
 	
 	@Autowired
      IOffreService offreService;
+	
+	@Autowired
+	UserService userService;
 	
 	@Autowired
 	NotificationService notifService;
@@ -68,14 +72,13 @@ public class ReservationServiceImpl implements IReservationService {
 			}
 			offer.addReservation(rsv);
 			offreService.updateOffre(offer);
-			String msg = "Your reservation for the offer is done successfully";
-			String userName = rsv.getCreatedBy();
+			String msg = "Your reservation for the offer "+ offer.getTitle() +" is done successfully, thanks for your interest";
+			String userName = userService.getCurrentUser().getUsername();
 			Notification notif = NotificationProviderFactory.getDefaultProvider().getNotification(userName, msg, NotificationType.MAIL);
 			notifService.sendNotification(notif);
-
-
 		return rsv;
 	}
+
 
 	@Override
 	public void deleteReservation(Long id) {
