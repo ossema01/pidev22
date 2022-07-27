@@ -1,6 +1,8 @@
 package tn.esprit.wellbeing.modules.forum.models;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.OneToMany;
 
 import tn.esprit.wellbeing.modules.forum.AbstractForumObject;
 
@@ -8,5 +10,15 @@ import tn.esprit.wellbeing.modules.forum.AbstractForumObject;
 public class Survey extends AbstractForumObject {
 	
 	private SurveyContent surveyContent;
+
+	public SurveyContent getSurveyContent() {
+		return surveyContent;
+	}
+
+	public void setSurveyContent(SurveyContent surveyContent) {
+		this.surveyContent = surveyContent;
+	}
+	
+	
 
 }
