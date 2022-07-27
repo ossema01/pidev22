@@ -168,14 +168,14 @@ public class UserController {
         return ResponseEntity.badRequest().body("User not verified, please check your email inbox.");
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
-    @PostMapping("/block/{username}")
+    @PreAuthorize("hasRole('HR')")
+    @PostMapping("/hr/block/{username}")
     public ResponseEntity<String> blockUser(@PathVariable String username) {
         return ResponseEntity.ok().body(userService.blockUser(username));
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
-    @PostMapping("/bulk/block")
+    @PreAuthorize("hasRole('HR')")
+    @PostMapping("/hr/bulk/block")
     public ResponseEntity<String> bulkBlockUser(@RequestBody String[] usernames) {
         List<String> wrongUsernames = new ArrayList<>();
         for (String username : usernames) {
@@ -195,11 +195,24 @@ public class UserController {
         return ResponseEntity.ok().body("Users Blocked Successfully");
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
-    @GetMapping("/admin/monthly-active")
+    @PreAuthorize("hasRole('HR')")
+    @GetMapping("/hr/monthly-active")
     public ResponseEntity<User[]> monthlyActiveUsers() {
         User[] users = userService.getMonthlyActiveUsers();
         return ResponseEntity.ok().body(users);
+    }
+
+    @PreAuthorize("hasRole('HR')")
+    @DeleteMapping("/hr/user/{username}")
+    public ResponseEntity<String> deleteUser(@PathVariable String username) {
+        userService.deleteUser(username);
+        return ResponseEntity.ok().body("User was Deleted");
+    }
+    @PreAuthorize("hasRole('HR')")
+    @DeleteMapping("/hr/bulk/user/")
+    public ResponseEntity<String> deleteUsers(@RequestBody String[] usernames) {
+        userService.deleteUsers(usernames);
+        return ResponseEntity.ok().body("User was Deleted");
     }
 
     private String getApplicationUrl(HttpServletRequest request) {

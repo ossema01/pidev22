@@ -19,6 +19,10 @@ public interface UserService extends UserDetailsService {
 
     User getUser(String userName);
 
+    void deleteUser(String userName);
+
+    void deleteUsers(String[] userNamesList);
+
     User updateUserProfile(User user);
 
     void updateMonthlyActive(String username);

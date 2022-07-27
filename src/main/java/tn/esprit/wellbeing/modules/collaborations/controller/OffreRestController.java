@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -43,6 +44,7 @@ public class OffreRestController {
 	}
 
 	// http://localhost:8090/pidev/add-offer
+	@PreAuthorize("hasRole('HR')")
 	@PostMapping("/add-offer")
 	public Offre addOffre(@RequestBody Offre offer) {
 		Offre offre = offreService.addOffre(offer);
