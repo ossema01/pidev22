@@ -1,5 +1,7 @@
 package tn.esprit.wellbeing.modules.feedback.ratings;
 
+import java.util.OptionalDouble;
+
 import org.springframework.stereotype.Service;
 
 @Service
@@ -17,8 +19,11 @@ public class RatingServiceImpl implements RatingService {
 
 	@Override
 	public Rating calculateRating(HasRating entity) {
-		Double avg = entity.getRatings().stream().mapToDouble(r -> r.getRate()).average().getAsDouble();
-		Rating rate = new Rating(avg.floatValue(), entity.getRatings().size());
+		OptionalDouble avg = entity.getRatings().stream().mapToDouble(r -> r.getRate()).average();
+		if (avg.isEmpty()) {
+			return new Rating(0, entity.getRatings().size());
+		}
+		Rating rate = new Rating(((Double) avg.getAsDouble()).floatValue(), entity.getRatings().size());
 		return rate;
 	}
 

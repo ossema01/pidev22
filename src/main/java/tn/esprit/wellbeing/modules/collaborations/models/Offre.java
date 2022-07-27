@@ -46,16 +46,15 @@ public class Offre extends SuperEntity implements HasRating {
 
 	private int nbOfAvailablePlaces;
 
-	@OneToMany(fetch = FetchType.LAZY)
+	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private Set<RatingByUser> ratings = new HashSet<>() ;
 
-	@OneToMany(cascade = CascadeType.ALL)
+
+	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private Set<Reservation> rsvList = new HashSet<>();
 	
 	
 	@Transient
-	
-	@JsonIgnore
 	private Rating totalRating;
 
 	public Set<Reservation> getRsvList() {

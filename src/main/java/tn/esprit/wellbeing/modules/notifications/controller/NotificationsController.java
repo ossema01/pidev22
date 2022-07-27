@@ -11,9 +11,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import tn.esprit.wellbeing.WellBeingApplication;
 import tn.esprit.wellbeing.modules.notifications.NotificationService;
 import tn.esprit.wellbeing.modules.notifications.data.Notification;
 import tn.esprit.wellbeing.modules.notifications.data.NotificationStatus;
+import tn.esprit.wellbeing.modules.userManagement.user.services.UserService;
 
 @RestController
 @RequestMapping("/notifications")
@@ -21,6 +23,9 @@ public class NotificationsController {
 
 	@Autowired
 	private NotificationService service;
+
+	@Autowired
+	private UserService us;
 
 	@PostMapping("/send")
 	public void send(@RequestBody Notification notif) {
@@ -39,7 +44,7 @@ public class NotificationsController {
 
 	@GetMapping("/unread")
 	public List<Notification> unreadMessages() {
-		return service.findNotificationByUserIdAndStatus("hzerai", NotificationStatus.CREATED);
+		return service.findNotificationByUserIdAndStatus(us.getCurrentUser().getUsername(), NotificationStatus.CREATED);
 	}
 
 }

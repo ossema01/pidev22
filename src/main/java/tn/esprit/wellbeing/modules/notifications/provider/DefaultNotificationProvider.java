@@ -88,4 +88,14 @@ public class DefaultNotificationProvider implements NotificationProvider {
 		return notif;
 	}
 
+	@Override
+	public Notification getEmailNotification(String userId, String emailSubject, String message) {
+		Notification notif = new Notification();
+		notif.setToUser(userId);
+		notif.setMessage(message);
+		notif.setType(NotificationType.MAIL);
+		notif.setEmailSubject(emailSubject);
+		return notif;
+	}
+
 }

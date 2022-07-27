@@ -20,6 +20,10 @@ public class UserModel {
 
     private Integer pointsNumber;
 
+    private List<String> interests;
+
+    private String phoneNumber;
+
     private String newEmail;
 
     private String username;

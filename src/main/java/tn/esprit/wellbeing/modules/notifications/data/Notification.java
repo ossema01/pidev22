@@ -1,5 +1,7 @@
 package tn.esprit.wellbeing.modules.notifications.data;
 
+import java.time.LocalDateTime;
+
 import javax.persistence.Entity;
 
 import tn.esprit.wellbeing.models.SuperEntity;
@@ -14,6 +16,26 @@ public class Notification extends SuperEntity {
 	private NotificationStatus status = NotificationStatus.CREATED;
 	
 	private NotificationType type = NotificationType.DEFAULT;
+	
+	private LocalDateTime sendAt;
+	
+	private String emailSubject = "Notification from PIDEV";
+
+	public String getEmailSubject() {
+		return emailSubject;
+	}
+
+	public void setEmailSubject(String emailSubject) {
+		this.emailSubject = emailSubject;
+	}
+
+	public LocalDateTime getSendAt() {
+		return sendAt;
+	}
+
+	public void setSendAt(LocalDateTime sendAt) {
+		this.sendAt = sendAt;
+	}
 
 	public String getMessage() {
 		return message;
