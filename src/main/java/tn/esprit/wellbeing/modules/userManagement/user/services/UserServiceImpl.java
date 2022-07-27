@@ -141,6 +141,12 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             } else {
                 user.setPointsNumber(0);
             }
+            if (model.getPhoneNumber() != null) {
+                user.setPhoneNumber(model.getPhoneNumber());
+            }
+            if (model.getInterests() != null) {
+                user.setInterests(model.getInterests());
+            }
             user.setMonthlyActive(0);
             userRepository.save(user);
             if (model.getRoles() != null) {
