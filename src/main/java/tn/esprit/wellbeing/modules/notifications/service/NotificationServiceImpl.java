@@ -1,5 +1,6 @@
 package tn.esprit.wellbeing.modules.notifications.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -11,6 +12,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import tn.esprit.wellbeing.modules.notifications.HasNotifications;
@@ -23,6 +25,7 @@ import tn.esprit.wellbeing.modules.notifications.data.NotificationStatus;
 import tn.esprit.wellbeing.modules.notifications.data.NotificationType;
 import tn.esprit.wellbeing.modules.notifications.provider.NotificationProviderFactory;
 import tn.esprit.wellbeing.modules.userManagement.user.repository.UserRepository;
+import tn.esprit.wellbeing.modules.userManagement.user.services.UserService;
 
 @Service
 public class NotificationServiceImpl implements NotificationService {
@@ -36,6 +39,9 @@ public class NotificationServiceImpl implements NotificationService {
 	private UserRepository userRepo;
 	@Autowired
 	private SimpMessagingTemplate simpMessagingTemplate;
+
+	@Autowired
+	private UserService us;
 
 	@Override
 	public void sendNotification(Object... params) {
@@ -64,32 +70,15 @@ public class NotificationServiceImpl implements NotificationService {
 		if (notif == null) {
 			throw new NotificationException("Coudn't create notification using provider. Please check your paremeters");
 		}
-		notif = repo.save(notif);
-		if (notif.getType().equals(NotificationType.MAIL)) {
-			sendMail(notif);
-		} else {
-			defaultSendNotif(notif);
-		}
-
+		sendNotification(notif);
 	}
 
 	@Override
 	public void sendNotification(Notification notif) {
 		notif = repo.save(notif);
-		if (notif.getType().equals(NotificationType.MAIL)) {
-			sendMail(notif);
-		} else {
-			defaultSendNotif(notif);
+		if (notif.getSendAt() != null && notif.getSendAt().isAfter(LocalDateTime.now())) {
+			return; // do not send now
 		}
-	}
-
-	@Override
-	public void sendNotification(String toUser, String text) {
-		Notification notif = createNotificationUsingProvider(null, toUser, text, NotificationType.DEFAULT);
-		if (notif == null) {
-			throw new NotificationException("Coudn't create notification using provider. Please check your paremeters");
-		}
-		notif = repo.save(notif);
 		if (notif.getType().equals(NotificationType.MAIL)) {
 			sendMail(notif);
 		} else {
@@ -97,6 +86,21 @@ public class NotificationServiceImpl implements NotificationService {
 		}
 		notif.setStatus(NotificationStatus.SENT);
 		notif = repo.save(notif);
+	}
+
+	@Override
+	public void sendNotification(String toUser, String text) {
+		sendNotification(toUser, text, null);
+	}
+
+	@Override
+	public void sendNotification(String toUser, String text, LocalDateTime when) {
+		Notification notif = createNotificationUsingProvider(null, toUser, text, NotificationType.DEFAULT);
+		if (notif == null) {
+			throw new NotificationException("Coudn't create notification using provider. Please check your paremeters");
+		}
+		notif.setSendAt(when);
+		sendNotification(notif);
 	}
 
 	private void defaultSendNotif(Notification notif) {
@@ -119,9 +123,7 @@ public class NotificationServiceImpl implements NotificationService {
 			} else {
 				notif = provider.getNotification(hasNotif, userId);
 			}
-		} else
-
-		{
+		} else {
 			provider = NotificationProviderFactory.getDefaultProvider();
 			notif = provider.getNotification(hasNotif, userId, message, type);
 		}
@@ -167,9 +169,9 @@ public class NotificationServiceImpl implements NotificationService {
 			MimeMessageHelper mimeMessageHelper;
 			mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
 			mimeMessageHelper.setFrom(sender);
-			mimeMessageHelper.setTo(userRepo.findByUsername(notif.getCreatedBy()).getEmail());
-			mimeMessageHelper.setText(notif.getMessage());
-			mimeMessageHelper.setSubject("Notification from PIDEV");
+			mimeMessageHelper.setTo(userRepo.findByUsername(notif.getToUser()).getEmail());
+			mimeMessageHelper.setText(notif.getMessage(), true);
+			mimeMessageHelper.setSubject(notif.getEmailSubject());
 			mailer.send(mimeMessage);
 		} catch (MessagingException e) {
 			throw new NotificationException(e);
@@ -178,7 +180,7 @@ public class NotificationServiceImpl implements NotificationService {
 
 	@Override
 	public List<Notification> getCurrentUserNotifications() {
-		String currentUser = "hzerai";
+		String currentUser = us.getCurrentUser().getUsername();
 		return repo.findByToUser(currentUser);
 	}
 
@@ -203,6 +205,28 @@ public class NotificationServiceImpl implements NotificationService {
 			break;
 		}
 		return repo.save(notification);
+	}
+
+	@Scheduled(cron = "@hourly")
+	public void sendScheduledNotifications() {
+		LocalDateTime to = LocalDateTime.now();
+		LocalDateTime from = to.minusHours(1);
+		List<Notification> notifs = this.repo.findScheduled(from, to);
+		notifs.parallelStream().forEach(n -> {
+			n.setSendAt(null);
+			sendNotification(n);
+		});
+	}
+
+	@Scheduled(cron = "@daily")
+	public void reSendNotReadNotificationsByEmail() {
+		LocalDateTime from = LocalDateTime.now().minusDays(3);
+		List<Notification> notifs = this.repo.findNotReadNotifications(from);
+		notifs.parallelStream().forEach(n -> {
+			n.setStatus(NotificationStatus.CREATED);
+			n.setType(NotificationType.MAIL);
+			sendNotification(n);
+		});
 	}
 
 }

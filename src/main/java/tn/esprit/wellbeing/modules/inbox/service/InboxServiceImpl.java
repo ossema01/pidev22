@@ -12,6 +12,7 @@ import tn.esprit.wellbeing.modules.inbox.InboxService;
 import tn.esprit.wellbeing.modules.inbox.data.Message;
 import tn.esprit.wellbeing.modules.inbox.data.MessageRepository;
 import tn.esprit.wellbeing.modules.inbox.data.MessageStatus;
+import tn.esprit.wellbeing.modules.userManagement.user.services.UserService;
 
 @Service
 public class InboxServiceImpl implements InboxService {
@@ -21,6 +22,9 @@ public class InboxServiceImpl implements InboxService {
 
 	@Autowired
 	private SimpMessagingTemplate simpMessagingTemplate;
+
+	@Autowired
+	private UserService us;
 
 	@Override
 	public void sendMessage(String toUserName, String body) {
@@ -43,14 +47,13 @@ public class InboxServiceImpl implements InboxService {
 
 	@Override
 	public List<Message> getInbox() {
-		String userId = "hzerai"; // get currentUserId
-
+		String userId = us.getCurrentUser().getUsername();
 		return repo.findByToUserOrCreatedBy(userId, userId);
 	}
 
 	@Override
 	public List<Message> unreadMessages() {
-		String userId = "hzerai"; // get currentUserId
+		String userId = us.getCurrentUser().getUsername();
 		List<Message> messages = repo.findByToUserAndStatus(userId, MessageStatus.Sent);
 		messages.forEach(m -> updateMessageStatusById(MessageStatus.Read, m.getId()));
 		return messages;

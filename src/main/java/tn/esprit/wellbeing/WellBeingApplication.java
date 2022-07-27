@@ -5,6 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
@@ -16,6 +17,7 @@ import tn.esprit.wellbeing.modules.occurences.downloadPDF.PDFGenerator;
 @SpringBootApplication
 @EnableSwagger2
 @EnableWebMvc
+@EnableScheduling
 public class WellBeingApplication {
 	
 	public static ApplicationContext context;

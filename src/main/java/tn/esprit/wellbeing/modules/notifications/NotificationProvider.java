@@ -24,5 +24,7 @@ public interface NotificationProvider {
 	Notification getNotification(String username, String message);
 
 	Notification getNotification(String username, String message, NotificationType type);
+	
+	Notification getEmailNotification(String userId, String emailSubject, String message);
 
 }

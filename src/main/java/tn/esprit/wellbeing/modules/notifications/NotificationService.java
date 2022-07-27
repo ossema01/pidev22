@@ -1,5 +1,6 @@
 package tn.esprit.wellbeing.modules.notifications;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import tn.esprit.wellbeing.modules.notifications.data.Notification;
@@ -34,5 +35,7 @@ public interface NotificationService {
 	void forceChangeStatus(Notification notification, NotificationStatus toStatus);
 
 	void sendNotification(String toUser, String text);
+	
+	void sendNotification(String toUser, String text, LocalDateTime when);
 
 }
