@@ -1,5 +1,7 @@
 package tn.esprit.wellbeing.modules.forum.models;
 
+import java.util.List;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
@@ -9,15 +11,16 @@ import tn.esprit.wellbeing.modules.forum.AbstractForumObject;
 @Entity
 public class Survey extends AbstractForumObject {
 	
-	private SurveyContent surveyContent;
+	@OneToMany(targetEntity = SurveyQuestion.class, cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<SurveyQuestion> questions;
 
-	public SurveyContent getSurveyContent() {
-		return surveyContent;
+	public List<SurveyQuestion> getQuestions() {
+		return questions;
 	}
 
-	public void setSurveyContent(SurveyContent surveyContent) {
-		this.surveyContent = surveyContent;
-	}
+	public void setQuestions(List<SurveyQuestion> questions) {
+		this.questions = questions;
+	}	
 	
 	
 
