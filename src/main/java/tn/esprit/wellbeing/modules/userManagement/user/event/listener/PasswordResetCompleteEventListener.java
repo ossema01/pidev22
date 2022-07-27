@@ -4,7 +4,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
-import tn.esprit.wellbeing.modules.userManagement.email.EmailService;
+import tn.esprit.wellbeing.modules.notifications.NotificationService;
+import tn.esprit.wellbeing.modules.notifications.data.Notification;
+import tn.esprit.wellbeing.modules.notifications.provider.NotificationProviderFactory;
 import tn.esprit.wellbeing.modules.userManagement.user.entity.User;
 import tn.esprit.wellbeing.modules.userManagement.user.event.ResetPasswordCompleteEvent;
 import tn.esprit.wellbeing.modules.userManagement.user.services.UserService;
@@ -19,7 +21,7 @@ public class PasswordResetCompleteEventListener implements ApplicationListener<R
     private UserService userService;
 
     @Autowired
-    private EmailService emailService;
+    private NotificationService notificationService;
 
     @Override
     public void onApplicationEvent(ResetPasswordCompleteEvent event) {
@@ -107,7 +109,8 @@ public class PasswordResetCompleteEventListener implements ApplicationListener<R
                 "        </tr>\n" +
                 "    </table>\n" +
                 "</div>\n";
-        emailService.sendEmail(user.getEmail(), subject, body);
+        Notification notif = NotificationProviderFactory.getDefaultProvider().getEmailNotification(user.getUsername(), subject, body);
+        notificationService.sendSystemNotification(user.getEmail(), notif);
         //sendResetPasswordEmail
         log.info("Click the link to reset your account password: {}", url);
     }
