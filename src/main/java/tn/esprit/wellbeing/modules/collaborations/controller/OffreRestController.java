@@ -9,6 +9,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -69,7 +70,10 @@ public class OffreRestController {
 		
 	// http://localhost:8090/pidev/export/offers/excel
 	@GetMapping("/export/offers/excel")
-	    public void exportToExcel(HttpServletResponse response) throws IOException {
+	    public void exportToExcel(HttpServletResponse response, @RequestParam(name = "dateBefore", required = false) @DateTimeFormat(pattern = "dd/MM/yyyy") Date dateBefore,
+	            @RequestParam(name = "dateAfter", required = false) @DateTimeFormat(pattern = "dd/MM/yyyy") Date dateAfter) throws IOException {
+		
+		
 	        response.setContentType("application/octet-stream");
 	        DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
 	        String currentDateTime = dateFormatter.format(new Date());
@@ -78,7 +82,8 @@ public class OffreRestController {
 	        String headerValue = "attachment; filename=offers_" + currentDateTime + ".csv";
 	        response.setHeader(headerKey, headerValue);
 	         
-	        List<Offre> offersList = offreService.retrieveAllOffers();
+	        List<Offre> offersList = offreService.exportAllOffersByDate(dateBefore, dateAfter);
+	        
 	         
 	       OfferExcelExporter excelExporter = new OfferExcelExporter(offersList);
 	         

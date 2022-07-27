@@ -6,9 +6,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import tn.esprit.wellbeing.modules.userManagement.email.EmailService;
 import tn.esprit.wellbeing.modules.userManagement.user.entity.User;
-import tn.esprit.wellbeing.modules.userManagement.user.entity.VerificationToken;
 import tn.esprit.wellbeing.modules.userManagement.user.event.RegistrationCompleteEvent;
 import tn.esprit.wellbeing.modules.userManagement.user.event.ResetPasswordCompleteEvent;
 import tn.esprit.wellbeing.modules.userManagement.user.event.UpdateProfileCompleteEvent;
@@ -26,8 +24,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
-
-    private final EmailService emailService;
 
     private final ResetPasswordService resetPasswordService;
 
@@ -73,10 +69,10 @@ public class UserController {
     public ResponseEntity<String> resendVerificationToken(@RequestParam("token") String oldToken, @RequestBody Credentials credentials, HttpServletRequest request) {
         User userdata = userService.findByEmail(credentials.getEmail());
         log.info("user is {}", userdata.isEnabled());
-        if (!userdata.isEnabled()) {
+        if (userdata != null && !userdata.isEnabled()) {
             var verificationToken = userService.generateNewVerificationToken(oldToken);
             var user = verificationToken.getUser();
-            sendTokenMail(credentials.getEmail(), "verifyRegistration", "Verification email", request, verificationToken);
+            publisher.publishEvent(new RegistrationCompleteEvent(userdata, getApplicationUrl(request)));
             return ResponseEntity.ok().body("Verification Link Sent");
         }
         return ResponseEntity.ok().body("User already verified");
@@ -90,7 +86,7 @@ public class UserController {
         }
         var resetPasswordToken = resetPasswordService.findByUserId(user.getId());
 
-        if (resetPasswordToken.getToken() == null) {
+        if (resetPasswordToken == null) {
             var userEnabled = user.isEnabled();
 
             if (userEnabled) {
@@ -99,7 +95,7 @@ public class UserController {
             }
             return ResponseEntity.ok().body("confirm your account at: " + credentials.getEmail());
         }
-        return ResponseEntity.ok().body("Reset password email was sent to " + credentials.getEmail());
+        return ResponseEntity.ok().body("Reset password email was already sent to " + credentials.getEmail());
     }
 
     @PostMapping("/forgot-password")
@@ -204,17 +200,6 @@ public class UserController {
     public ResponseEntity<User[]> monthlyActiveUsers() {
         User[] users = userService.getMonthlyActiveUsers();
         return ResponseEntity.ok().body(users);
-    }
-
-    private void sendTokenMail(String email, String endpoint, String emailSubject, HttpServletRequest request, VerificationToken verificationToken) {
-        var applicationUrl = getApplicationUrl(request);
-        //send mail to user
-        var url = applicationUrl + "/" + endpoint + "?token=" + verificationToken.getToken();
-        var subject = emailSubject;
-        var body = url;
-        emailService.sendEmail(email, subject, body);
-        //sendEmail
-        log.info("Click the link to verify your account: {}", url);
     }
 
     private String getApplicationUrl(HttpServletRequest request) {

@@ -1,5 +1,6 @@
 package tn.esprit.wellbeing.modules.collaborations.services;
 
+import java.util.Date;
 import java.util.List;
 
 import tn.esprit.wellbeing.modules.collaborations.models.Offre;
@@ -12,5 +13,6 @@ public interface IOffreService {
 	Offre updateOffre(Offre offre);
 	Offre retrieveOffre(Long id);
 	void addRating(Long offerId, float rating);
+	List<Offre> exportAllOffersByDate(Date dateBefore, Date dateAfter);
 
 }

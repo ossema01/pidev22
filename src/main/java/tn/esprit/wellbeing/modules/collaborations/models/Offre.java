@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
@@ -45,16 +46,15 @@ public class Offre extends SuperEntity implements HasRating {
 
 	private int nbOfAvailablePlaces;
 
-	@OneToMany(fetch = FetchType.LAZY)
+	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private Set<RatingByUser> ratings = new HashSet<>() ;
 
-	@OneToMany
+
+	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private Set<Reservation> rsvList = new HashSet<>();
 	
 	
 	@Transient
-	
-	@JsonIgnore
 	private Rating totalRating;
 
 	public Set<Reservation> getRsvList() {
@@ -134,6 +134,11 @@ public class Offre extends SuperEntity implements HasRating {
 	@Override
 	public boolean removeRating(RatingByUser rating) {
 		return this.ratings.remove(rating);
+	}
+	
+	public void addReservation(Reservation rsv) {
+		
+		this.rsvList.add(rsv);
 	}
 
 }
