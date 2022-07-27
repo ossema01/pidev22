@@ -18,6 +18,8 @@ public class UserModel {
 
     private String email;
 
+    private Integer pointsNumber;
+
     private String newEmail;
 
     private String username;

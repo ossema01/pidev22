@@ -22,8 +22,11 @@ import tn.esprit.wellbeing.modules.userManagement.user.repository.UserRepository
 import tn.esprit.wellbeing.modules.userManagement.user.services.resetPassword.ResetPasswordService;
 import tn.esprit.wellbeing.modules.userManagement.user.services.verificationToken.VerificationTokenService;
 
-import java.util.*;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
+import java.util.UUID;
 
 @Transactional
 @Slf4j
@@ -132,6 +135,11 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             user.setLastName(model.getLastName());
             user.setUsername(model.getUsername());
             user.setPassword(passwordEncoder(model.getPassword()));
+            if (model.getPointsNumber() != null) {
+                user.setPointsNumber(model.getPointsNumber());
+            } else {
+                user.setPointsNumber(0);
+            }
             user.setMonthlyActive(0);
             userRepository.save(user);
             if (model.getRoles() != null) {
