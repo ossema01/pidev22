@@ -7,12 +7,14 @@ import javax.persistence.CascadeType;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.OneToMany;
 
+import tn.esprit.wellbeing.WellBeingApplication;
 import tn.esprit.wellbeing.models.SuperEntity;
 import tn.esprit.wellbeing.modules.feedback.comments.Comment;
 import tn.esprit.wellbeing.modules.feedback.comments.HasComments;
 import tn.esprit.wellbeing.modules.feedback.reactions.HasReactions;
 import tn.esprit.wellbeing.modules.feedback.reactions.Reaction;
 import tn.esprit.wellbeing.modules.notifications.HasNotifications;
+import tn.esprit.wellbeing.modules.userManagement.user.services.UserService;
 
 @MappedSuperclass
 public class AbstractForumObject extends SuperEntity implements HasNotifications, HasComments, HasReactions {
@@ -32,6 +34,24 @@ public class AbstractForumObject extends SuperEntity implements HasNotifications
 	private String topic;
 
 	private boolean anonymous;
+	
+	private boolean suspendedComments;
+	
+	public boolean isSuspendedComments() {
+		return suspendedComments;
+	}
+
+	public void setSuspendedComments(boolean suspendedComments) {
+		this.suspendedComments = suspendedComments;
+	}
+
+	public void setComments(List<Comment> comments) {
+		this.comments = comments;
+	}
+
+	public void setReactions(List<Reaction> reactions) {
+		this.reactions = reactions;
+	}
 
 	public String getTopic() {
 		return topic;
@@ -71,9 +91,9 @@ public class AbstractForumObject extends SuperEntity implements HasNotifications
 	 **/
 	@Override
 	public String getCreatedBy() {
-		// if (InterfaceToSecurity.getCurrentUser().isAdmin()){
-		// return super.getCreatedBy();
-		// }
+		 if (WellBeingApplication.context.getBean(UserService.class).getCurrentUser().getAuthorities().contains("HR")){
+		 return super.getCreatedBy();
+		 }
 		return anonymous ? ANONYMOUS_CREATOR : super.getCreatedBy();
 	}
 

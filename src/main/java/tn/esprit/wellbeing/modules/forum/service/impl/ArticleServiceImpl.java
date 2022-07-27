@@ -4,53 +4,45 @@ import java.util.Collection;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import tn.esprit.wellbeing.modules.feedback.comments.Comment;
 import tn.esprit.wellbeing.modules.feedback.comments.CommentsService;
-import tn.esprit.wellbeing.modules.forum.exception.ObjectNotFoundException;
+import tn.esprit.wellbeing.modules.forum.models.Article;
 import tn.esprit.wellbeing.modules.forum.models.Post;
-import tn.esprit.wellbeing.modules.forum.repository.PostRepository;
-import tn.esprit.wellbeing.modules.forum.service.PostService;
-import tn.esprit.wellbeing.modules.userManagement.user.entity.User;
+import tn.esprit.wellbeing.modules.forum.repository.ArticleRepository;
+import tn.esprit.wellbeing.modules.forum.service.ArticleService;
 
-@Service
-public class PostServiceImpl implements PostService {
+public class ArticleServiceImpl implements ArticleService{
 	
 	@Autowired
 	CommentsService commentService;
-
+	
 	@Autowired
-	PostRepository repository;
+	ArticleRepository repository;
 
 	@Override
-	public Post findById(Long id) {
-		return repository.findById(id).orElseThrow(() -> new ObjectNotFoundException(id));
+	public Article findById(Long id) {
+		return repository.findById(id).get();
 	}
 
 	@Override
-	public Collection<Post> findAll() {
-		return (Collection<Post>) repository.findAll();
+	public Article save(Article forumObject) {
+		return repository.save(forumObject);
 	}
 
 	@Override
-	public Post save(Post object) {
-		return repository.save(object);
+	public Collection<Article> findAll() {
+		return (Collection<Article>) repository.findAll();
 	}
 
 	@Override
-	public void delete(Post forumObject) {
-		repository.delete(forumObject);
-	}
-
-	@Override
-	public User[] findByCreatedBy(String username) {
-		return repository.findAllByCreatedBy(username);
+	public void delete(Article forumObject) {
+		 repository.delete(forumObject);
 	}
 
 	@Override
 	public void comment(Long forumObjectId, String commentContent) {
-		Post post = findById(forumObjectId);
+		Article post = findById(forumObjectId);
 		if(post.isSuspendedComments()) {
 			Comment comment = new Comment();
 			comment.setBody(commentContent);
@@ -62,10 +54,9 @@ public class PostServiceImpl implements PostService {
 	}
 
 	@Override
-	public void reply(Post post,Comment commentToReply, String replyContent) {
-		commentService.addReply(post, commentToReply, replyContent);
-		repository.save(post);
-		
+	public void reply(Article entity, Comment commentToReply, String replyContent) {
+		commentService.addReply(entity, commentToReply, replyContent);
+		repository.save(entity);
 	}
 
 	@Override
@@ -76,11 +67,13 @@ public class PostServiceImpl implements PostService {
 	@Override
 	public void suspendComments(Long forumObjctId) {
 		repository.suspendComments(forumObjctId);
+		
 	}
 
 	@Override
 	public void activateComments(Long forumObjctId) {
 		repository.activateComments(forumObjctId);
+		
 	}
 
 	@Override
@@ -94,4 +87,5 @@ public class PostServiceImpl implements PostService {
 		repository.unAnonymize(id);
 		
 	}
+
 }

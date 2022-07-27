@@ -4,53 +4,43 @@ import java.util.Collection;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import tn.esprit.wellbeing.modules.feedback.comments.Comment;
 import tn.esprit.wellbeing.modules.feedback.comments.CommentsService;
-import tn.esprit.wellbeing.modules.forum.exception.ObjectNotFoundException;
-import tn.esprit.wellbeing.modules.forum.models.Post;
-import tn.esprit.wellbeing.modules.forum.repository.PostRepository;
-import tn.esprit.wellbeing.modules.forum.service.PostService;
-import tn.esprit.wellbeing.modules.userManagement.user.entity.User;
+import tn.esprit.wellbeing.modules.forum.models.Survey;
+import tn.esprit.wellbeing.modules.forum.repository.SurveyRepository;
 
-@Service
-public class PostServiceImpl implements PostService {
-	
+public class SurveyService implements tn.esprit.wellbeing.modules.forum.service.SurveyService {
+
 	@Autowired
 	CommentsService commentService;
-
+	
 	@Autowired
-	PostRepository repository;
+	 SurveyRepository repository;
 
 	@Override
-	public Post findById(Long id) {
-		return repository.findById(id).orElseThrow(() -> new ObjectNotFoundException(id));
+	public  Survey findById(Long id) {
+		return repository.findById(id).get();
 	}
 
 	@Override
-	public Collection<Post> findAll() {
-		return (Collection<Post>) repository.findAll();
+	public Survey save(Survey forumObject) {
+		return repository.save(forumObject);
 	}
 
 	@Override
-	public Post save(Post object) {
-		return repository.save(object);
+	public Collection<Survey> findAll() {
+		return (Collection<Survey>) repository.findAll();
 	}
 
 	@Override
-	public void delete(Post forumObject) {
-		repository.delete(forumObject);
-	}
-
-	@Override
-	public User[] findByCreatedBy(String username) {
-		return repository.findAllByCreatedBy(username);
+	public void delete(Survey forumObject) {
+		 repository.delete(forumObject);
 	}
 
 	@Override
 	public void comment(Long forumObjectId, String commentContent) {
-		Post post = findById(forumObjectId);
+		Survey post = findById(forumObjectId);
 		if(post.isSuspendedComments()) {
 			Comment comment = new Comment();
 			comment.setBody(commentContent);
@@ -62,10 +52,9 @@ public class PostServiceImpl implements PostService {
 	}
 
 	@Override
-	public void reply(Post post,Comment commentToReply, String replyContent) {
-		commentService.addReply(post, commentToReply, replyContent);
-		repository.save(post);
-		
+	public void reply(Survey entity, Comment commentToReply, String replyContent) {
+		commentService.addReply(entity, commentToReply, replyContent);
+		repository.save(entity);
 	}
 
 	@Override
@@ -76,11 +65,13 @@ public class PostServiceImpl implements PostService {
 	@Override
 	public void suspendComments(Long forumObjctId) {
 		repository.suspendComments(forumObjctId);
+		
 	}
 
 	@Override
 	public void activateComments(Long forumObjctId) {
 		repository.activateComments(forumObjctId);
+		
 	}
 
 	@Override
@@ -94,4 +85,5 @@ public class PostServiceImpl implements PostService {
 		repository.unAnonymize(id);
 		
 	}
+
 }
