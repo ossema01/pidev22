@@ -1,6 +1,5 @@
 package tn.esprit.wellbeing.modules.forum;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -26,7 +25,7 @@ public class DriveUploader {
 		String fooResourceUrl = "https://api.upload.io/v1/files/basic";
 		HttpEntity<byte[]> entity = null;
 		try {
-			entity = new HttpEntity<>(Files.readAllBytes(Paths.get("statsComments.png")), headers);
+			entity = new HttpEntity<>(Files.readAllBytes(Paths.get("statsCommentes.png")), headers);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

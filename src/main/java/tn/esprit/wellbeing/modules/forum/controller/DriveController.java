@@ -5,10 +5,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import tn.esprit.wellbeing.modules.feedback.comments.Comment;
 import tn.esprit.wellbeing.modules.forum.ChartGenerator;
 import tn.esprit.wellbeing.modules.forum.DriveUploader;
-import tn.esprit.wellbeing.modules.forum.models.Post;
 import tn.esprit.wellbeing.modules.forum.repository.PostRepository;
 
 
@@ -24,7 +22,8 @@ public class DriveController {
 		ChartGenerator.createDatasetComments();
 		ChartGenerator.createDatasetPsots();
 		ChartGenerator.createDatasetSurveys();
-		//DriveUploader.uploadStatisticsPostsFile();
+		DriveUploader.uploadStatisticsCommentsFile();
+		DriveUploader.uploadStatisticsPostsFile();
 	}
 
 }
