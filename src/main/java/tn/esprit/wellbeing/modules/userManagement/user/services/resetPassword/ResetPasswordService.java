@@ -13,4 +13,6 @@ public interface ResetPasswordService {
 
     void deleteById(Long id);
 
+    void deleteByUserId(Long id);
+
 }

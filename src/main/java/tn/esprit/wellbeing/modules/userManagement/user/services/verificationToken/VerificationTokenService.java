@@ -10,4 +10,6 @@ public interface VerificationTokenService {
     VerificationToken save(VerificationToken verificationToken);
 
     void deleteById(Long id);
+
+    void deleteByUserId(Long id);
 }

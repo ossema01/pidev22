@@ -3,7 +3,6 @@ package tn.esprit.wellbeing.modules.userManagement.user.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import tn.esprit.wellbeing.modules.userManagement.user.entity.ResetPasswordToken;
-import tn.esprit.wellbeing.modules.userManagement.user.entity.User;
 
 @Repository
 public interface ResetPasswordTokenRepository extends JpaRepository<ResetPasswordToken, Long> {
@@ -11,5 +10,6 @@ public interface ResetPasswordTokenRepository extends JpaRepository<ResetPasswor
 
     ResetPasswordToken findByUserId(Long id);
 
+    void deleteByUserId(Long id);
 
 }

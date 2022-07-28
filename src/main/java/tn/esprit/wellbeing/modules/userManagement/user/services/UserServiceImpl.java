@@ -78,6 +78,10 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public void deleteUser(String username) {
+        User user = userRepository.findByUsername(username);
+        user.getAuthorities().clear();
+        resetPasswordTokenService.deleteByUserId(user.getId());
+        verificationTokenService.deleteByUserId(user.getId());
         userRepository.deleteByUsername(username);
     }
 
