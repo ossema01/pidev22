@@ -80,14 +80,14 @@ public class PostController implements AbstractForumObjectController<Post>{
 
 	@Override
 	@GetMapping("/{id}/anonymize")
-	public void anonymize(Long id) {
+	public void anonymize(@PathVariable("id") Long id) {
 		service.anonymize(id);
 		
 	}
 
 	@Override
 	@GetMapping("/{id}/unAnonymize")
-	public void unAnonymize(Long id) {
+	public void unAnonymize(@PathVariable("id") Long id) {
 		service.unAnonymize(id);
 		
 	}

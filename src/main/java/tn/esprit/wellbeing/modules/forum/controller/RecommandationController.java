@@ -9,11 +9,15 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import tn.esprit.wellbeing.modules.feedback.comments.Comment;
 import tn.esprit.wellbeing.modules.forum.models.Recommendation;
 import tn.esprit.wellbeing.modules.forum.service.RecommandationService;
 
+@RestController()
+@RequestMapping("recommandation")
 public class RecommandationController implements AbstractForumObjectController<Recommendation> {
 
 	@Autowired
@@ -77,16 +81,30 @@ public class RecommandationController implements AbstractForumObjectController<R
 
 	@Override
 	@GetMapping("/{id}/anonymize")
-	public void anonymize(Long id) {
+	public void anonymize(@PathVariable("id") Long id) {
 		service.anonymize(id);
 
 	}
 
 	@Override
 	@GetMapping("/{id}/unAnonymize")
-	public void unAnonymize(Long id) {
+	public void unAnonymize( @PathVariable("id") Long id) {
 		service.unAnonymize(id);
 
 	}
+	
+	
+	@GetMapping("/{id}/approve")
+	public void approve(@PathVariable("id") Long id) {
+		service.approveRecommandation(id);
+
+	}
+	
+	@GetMapping("/{id}/reject")
+	public void reject(@PathVariable("id") Long id) {
+		service.rejectRecommandation(id);
+
+	}
+	
 
 }
