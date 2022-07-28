@@ -34,4 +34,9 @@ public class ResetPasswordServiceImpl implements ResetPasswordService {
     public void deleteById(Long id) {
         resetPasswordTokenRepository.deleteById(id);
     }
+
+    @Override
+    public void deleteByUserId(Long id) {
+        resetPasswordTokenRepository.deleteByUserId(id);
+    }
 }

@@ -58,8 +58,7 @@ public class User implements UserDetails {
     private String phoneNumber;
 
     @JsonIgnoreProperties(value = {"user"})
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "user", cascade = {CascadeType.REMOVE, CascadeType.ALL})
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "user", cascade = CascadeType.ALL)
     private List<Role> authorities;
 
     @Override

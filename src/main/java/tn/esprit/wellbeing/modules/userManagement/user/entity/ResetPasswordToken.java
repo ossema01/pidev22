@@ -3,8 +3,6 @@ package tn.esprit.wellbeing.modules.userManagement.user.entity;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 import java.util.Calendar;
@@ -27,8 +25,7 @@ public class ResetPasswordToken {
 
     private Date expirationTime;
 
-    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @OnDelete(action = OnDeleteAction.CASCADE)
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id", nullable = false, foreignKey = @ForeignKey(name = "FK_USER_RESET_TOKEN"))
     private User user;
 
