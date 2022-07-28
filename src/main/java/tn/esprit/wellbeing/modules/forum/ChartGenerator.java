@@ -17,7 +17,9 @@ import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.general.DefaultPieDataset;
 
 import tn.esprit.wellbeing.WellBeingApplication;
+import tn.esprit.wellbeing.modules.feedback.comments.CommentsService;
 import tn.esprit.wellbeing.modules.forum.service.PostService;
+import tn.esprit.wellbeing.modules.forum.service.SurveyService;
 import tn.esprit.wellbeing.modules.userManagement.user.services.UserService;
 
 public class ChartGenerator {
@@ -30,11 +32,23 @@ public class ChartGenerator {
 
 	public static void createDatasetSurveys() {
 		var dataset = new DefaultPieDataset();
+		SurveyService service = WellBeingApplication.context.getBean(SurveyService.class);
+		UserService userService = WellBeingApplication.context.getBean(UserService.class);
+		Map<String, Integer> mapOfPosts = new HashMap<>();
+		userService.getUsers().stream()
+			.map(e->e.getUsername())
+			.forEach(e->{
+				mapOfPosts.put(e, service.findByCreatedBy(e).length);
+			});
+		mapOfPosts.entrySet().stream()
+			.forEach(e->{
+				dataset.setValue(e.getKey(), e.getValue());
+			});
 
-		JFreeChart chart = ChartFactory.createPieChart("Most posted users", dataset, true, false, false);
+		JFreeChart chart = ChartFactory.createPieChart("Most survey posted users", dataset, true, false, false);
 		chart.getLegend().setFrame(BlockBorder.NONE);
 
-		chart.setTitle(new TextTitle("ost posted users", new Font("Serif", java.awt.Font.BOLD, 18)));
+		chart.setTitle(new TextTitle("Most posted users", new Font("Serif", java.awt.Font.BOLD, 18)));
 		try {
 			ChartUtils.saveChartAsPNG(new File("statsPostedUsers.png"), chart, 450, 400);
 		} catch (IOException e1) {
@@ -61,7 +75,7 @@ public class ChartGenerator {
 		chart.getLegend().setFrame(BlockBorder.NONE);
 		
 		
-		chart.setTitle(new TextTitle("ost posted users", new Font("Serif", java.awt.Font.BOLD, 18)));
+		chart.setTitle(new TextTitle("Users Posts", new Font("Serif", java.awt.Font.BOLD, 18)));
 		try {
 			ChartUtils.saveChartAsPNG(new File("statsPosts.png"), chart, 450, 400);
 		} catch (IOException e1) {
@@ -71,37 +85,30 @@ public class ChartGenerator {
 	}
 
 	public static void createDatasetComments() {
-		var datasetComments = new DefaultCategoryDataset();
-		PostService service = WellBeingApplication.context.getBean(PostService.class);
-		service.findAll().stream()
-				.sorted((x, y) -> Integer.valueOf(x.getComments().size()).compareTo(y.getComments().size())).limit(top)
-				.forEach(e -> {
-					datasetComments.setValue(e.getComments().size(), "Number of comments", e.getCreatedBy());
-				});
+		var datasetComments = new DefaultPieDataset();
+		UserService userService = WellBeingApplication.context.getBean(UserService.class);
+		CommentsService service = WellBeingApplication.context.getBean(CommentsService.class);
+		Map<String, Integer> mapOfPosts = new HashMap<>();
+		userService.getUsers().stream()
+		.map(e->e.getUsername())
+		.forEach(e->{
+			mapOfPosts.put(e, service.findByCreatedBy(e).length);
+		});
+		mapOfPosts.entrySet().stream()
+		.forEach(e->{
+			datasetComments.setValue(e.getKey(), e.getValue());
+		});
 
-		JFreeChart chartComments = ChartFactory.createBarChart("Active Posts", "User", "Posts", datasetComments,
-				PlotOrientation.VERTICAL, true, true, false);
+		JFreeChart chartComments = ChartFactory.createPieChart("Active users", datasetComments, true, false, false);
 
 		chartComments.getLegend().setFrame(BlockBorder.NONE);
 
-		chartComments.setTitle(new TextTitle("Most commented posts", new Font("Serif", java.awt.Font.BOLD, 18)));
+		chartComments.setTitle(new TextTitle("User Comments", new Font("Serif", java.awt.Font.BOLD, 18)));
 		try {
 			ChartUtils.saveChartAsPNG(new File("statsCommentes.png"), chartComments, 450, 400);
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-	}
-
-	private JFreeChart createChart(CategoryDataset dataset) {
-
-		JFreeChart chart = ChartFactory.createBarChart("Active Users", "User", "Posts", dataset,
-				PlotOrientation.VERTICAL, true, true, false);
-
-		chart.getLegend().setFrame(BlockBorder.NONE);
-
-		chart.setTitle(new TextTitle("Most commented posts", new Font("Serif", java.awt.Font.BOLD, 18)));
-
-		return chart;
 	}
 }

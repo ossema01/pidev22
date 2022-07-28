@@ -6,13 +6,19 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import tn.esprit.wellbeing.WellBeingApplication;
 import tn.esprit.wellbeing.modules.feedback.comments.Comment;
 import tn.esprit.wellbeing.modules.feedback.comments.CommentsService;
 import tn.esprit.wellbeing.modules.forum.exception.ObjectNotFoundException;
 import tn.esprit.wellbeing.modules.forum.models.Post;
 import tn.esprit.wellbeing.modules.forum.repository.PostRepository;
 import tn.esprit.wellbeing.modules.forum.service.PostService;
+import tn.esprit.wellbeing.modules.notifications.NotificationService;
+import tn.esprit.wellbeing.modules.notifications.data.Notification;
+import tn.esprit.wellbeing.modules.notifications.data.NotificationType;
+import tn.esprit.wellbeing.modules.notifications.provider.NotificationProviderFactory;
 import tn.esprit.wellbeing.modules.userManagement.user.entity.User;
+import tn.esprit.wellbeing.modules.userManagement.user.services.UserService;
 
 @Service
 public class PostServiceImpl implements PostService {
@@ -44,20 +50,23 @@ public class PostServiceImpl implements PostService {
 	}
 
 	@Override
-	public User[] findByCreatedBy(String username) {
+	public Post[] findByCreatedBy(String username) {
 		return repository.findAllByCreatedBy(username);
 	}
 
 	@Override
 	public void comment(Long forumObjectId, String commentContent) {
 		Post post = findById(forumObjectId);
-		if(post.isSuspendedComments()) {
-			Comment comment = new Comment();
-			comment.setBody(commentContent);
-			
-			post.getComments().add(comment);
-			
+		if(!post.isSuspendedComments()) {
+			Comment coment = new Comment();
+			coment.setBody(commentContent);
+			post.getComments().add(coment);
 			repository.save(post);
+			String first = WellBeingApplication.context.getBean(UserService.class).getCurrentUser().getFirstName();
+			String last = WellBeingApplication.context.getBean(UserService.class).getCurrentUser().getLastName();
+			Notification notif = NotificationProviderFactory.getDefaultProvider().getNotification("",first+" "+last+" commented on your post", NotificationType.MAIL);
+			notif.setToUser(post.getCreatedBy());
+			WellBeingApplication.context.getBean(NotificationService.class).sendNotification(notif);
 		}		
 	}
 

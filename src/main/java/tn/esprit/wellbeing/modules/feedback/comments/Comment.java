@@ -6,10 +6,17 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
+import javax.persistence.PostPersist;
 
+import tn.esprit.wellbeing.WellBeingApplication;
 import tn.esprit.wellbeing.models.SuperEntity;
 import tn.esprit.wellbeing.modules.feedback.reactions.HasReactions;
 import tn.esprit.wellbeing.modules.feedback.reactions.Reaction;
+import tn.esprit.wellbeing.modules.notifications.NotificationService;
+import tn.esprit.wellbeing.modules.notifications.data.Notification;
+import tn.esprit.wellbeing.modules.notifications.data.NotificationType;
+import tn.esprit.wellbeing.modules.notifications.provider.NotificationProviderFactory;
+import tn.esprit.wellbeing.modules.userManagement.user.services.UserService;
 
 @Entity
 public class Comment extends SuperEntity implements HasReactions {

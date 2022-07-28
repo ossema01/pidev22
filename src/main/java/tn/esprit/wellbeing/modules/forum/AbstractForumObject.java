@@ -1,11 +1,14 @@
 package tn.esprit.wellbeing.modules.forum;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.OneToMany;
+import javax.persistence.PostUpdate;
+import javax.persistence.PreUpdate;
 
 import tn.esprit.wellbeing.WellBeingApplication;
 import tn.esprit.wellbeing.models.SuperEntity;
@@ -91,8 +94,13 @@ public class AbstractForumObject extends SuperEntity implements HasNotifications
 	 **/
 	@Override
 	public String getCreatedBy() {
-		 if (WellBeingApplication.context.getBean(UserService.class).getCurrentUser().getAuthorities().contains("HR")){
-		 return super.getCreatedBy();
+		boolean hr = WellBeingApplication.context.getBean(UserService.class).getCurrentUser()
+			.getAuthorities()
+			.stream()
+			.map(e->e.getAuthority())
+			.anyMatch(e->e.equals("ROLE_HR"));
+		 if (hr){
+			 return super.getCreatedBy();
 		 }
 		return anonymous ? ANONYMOUS_CREATOR : super.getCreatedBy();
 	}
@@ -104,7 +112,7 @@ public class AbstractForumObject extends SuperEntity implements HasNotifications
 
 	@Override
 	public void addComment(Comment comment) {
-		comments.add(comment);
+		//comments.add(comment);
 	}
 
 	@Override

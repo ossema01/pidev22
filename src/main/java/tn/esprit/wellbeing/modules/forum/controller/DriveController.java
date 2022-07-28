@@ -21,24 +21,10 @@ public class DriveController {
 	
 	@GetMapping()
 	public void doDrive() {
-		Post post1 = new Post();
-		post1.setCreatedBy("ossemaa");
-		Post post2 = new Post();
-		post2.setCreatedBy("rouaaa");
-		Post post3 = new Post();
-		post3.setCreatedBy("nouhailaaa");
-		Comment comment1 = new Comment();
-		Comment comment2 = new Comment();
-		Comment comment3 = new Comment();
-		post1.addComment(comment1);
-		post3.addComment(comment2);
-		post3.addComment(comment3);
-		repoPost.save(post1);
-		repoPost.save(post2);
-		repoPost.save(post3);
 		ChartGenerator.createDatasetComments();
 		ChartGenerator.createDatasetPsots();
-		DriveUploader.uploadStatisticsPostsFile();
+		ChartGenerator.createDatasetSurveys();
+		//DriveUploader.uploadStatisticsPostsFile();
 	}
 
 }

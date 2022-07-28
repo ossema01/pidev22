@@ -13,9 +13,8 @@ public class SurveyQuestion extends SuperEntity {
 
 	private String question;
 
-	private int order;
 
-	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(targetEntity = SurveyResponse.class,cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<SurveyResponse> responses;
 
 	public List<SurveyResponse> getResponses() {
@@ -33,13 +32,4 @@ public class SurveyQuestion extends SuperEntity {
 	public void setQuestion(String question) {
 		this.question = question;
 	}
-
-	public int getOrder() {
-		return order;
-	}
-
-	public void setOrder(int order) {
-		this.order = order;
-	}
-
 }

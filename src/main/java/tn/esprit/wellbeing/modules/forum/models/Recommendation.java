@@ -1,5 +1,6 @@
 package tn.esprit.wellbeing.modules.forum.models;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -14,11 +15,11 @@ public class Recommendation extends AbstractForumObject {
 
 	private String recommendedSubject;
 	
-	@OneToMany(targetEntity = SurveyQuestion.class, cascade = CascadeType.ALL, orphanRemoval = true)
-	private List<User> usersApprovedRecommandation;
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<User> usersApprovedRecommandation = new ArrayList<>();
 	
-	@OneToMany(targetEntity = SurveyQuestion.class, cascade = CascadeType.ALL, orphanRemoval = true)
-	private List<User> usersRejectedRecommandation;
+	@OneToMany( cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<User> usersRejectedRecommandation = new ArrayList<>();
 	
 
 	public String getRecommendedSubject() {
