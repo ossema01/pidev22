@@ -2,8 +2,6 @@ package tn.esprit.wellbeing.modules.userManagement.user.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import tn.esprit.wellbeing.modules.userManagement.role.entity.Role;
@@ -11,7 +9,6 @@ import tn.esprit.wellbeing.modules.userManagement.role.entity.Role;
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -58,7 +55,7 @@ public class User implements UserDetails {
     private String phoneNumber;
 
     @JsonIgnoreProperties(value = {"user"})
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "user", orphanRemoval = true, cascade = CascadeType.ALL)
     private List<Role> authorities;
 
     @Override

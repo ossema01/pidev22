@@ -79,15 +79,33 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public void deleteUser(String username) {
         User user = userRepository.findByUsername(username);
-        user.getAuthorities().clear();
-        resetPasswordTokenService.deleteByUserId(user.getId());
-        verificationTokenService.deleteByUserId(user.getId());
+
+        VerificationToken verificationToken = verificationTokenService.findByUserId(user.getId());
+        ResetPasswordToken resetPasswordToken = resetPasswordTokenService.findByUserId(user.getId());
+
+        if (verificationToken != null) {
+            verificationTokenService.deleteById(verificationToken.getId());
+        }
+        if (resetPasswordToken != null) {
+            resetPasswordTokenService.deleteById(resetPasswordToken.getId());
+        }
         userRepository.deleteByUsername(username);
     }
 
     @Override
     public void deleteUsers(String[] userNamesList) {
         for (String username : userNamesList) {
+            User user = userRepository.findByUsername(username);
+
+            VerificationToken verificationToken = verificationTokenService.findByUserId(user.getId());
+            ResetPasswordToken resetPasswordToken = resetPasswordTokenService.findByUserId(user.getId());
+
+            if (verificationToken != null) {
+                verificationTokenService.deleteById(verificationToken.getId());
+            }
+            if (resetPasswordToken != null) {
+                resetPasswordTokenService.deleteById(resetPasswordToken.getId());
+            }
             userRepository.deleteByUsername(username);
         }
     }
